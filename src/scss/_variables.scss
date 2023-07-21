@@ -1,0 +1,13 @@
+$background-gray: rgb(34, 34, 34);
+$background-gray-lighter: lighten(rgb(197, 197, 197), 50%);
+
+$gray: rgb(238, 237, 237);
+$light-gray: lighten($gray, 5%);
+$dark-gray: darken($gray, 10%);
+$darker-gray: darken($gray, 30%);
+
+$gray2: rgba(230, 230, 230, 0.75);
+$dark-gray2: darken($gray2, 5%);
+
+$linear-gradient1: $dark-gray, $gray;
+$linear-gradient2: lighten($dark-gray2, 5%), darken($dark-gray2, 20%);

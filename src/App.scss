@@ -1,6 +1,10 @@
 .app {
   width: 100%;
   height: calc(100vh - 56px);
+
+  &__toast-container {
+    padding: 4.5rem 1rem;
+  }
 }
 
 .sash-wrap-line {

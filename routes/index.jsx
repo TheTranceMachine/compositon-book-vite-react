@@ -1,14 +1,40 @@
-import { createBrowserRouter } from 'react-router-dom';
-import App from '../src/App.jsx';
-import ErrorPage from '../src/ErrorPage.jsx';
-import { Prompt } from '../src/Prompt.jsx';
-import { NewCharacter } from '../src/NewCharacter.jsx';
-import { NewWorld } from '../src/NewWorld.jsx';
+import { createBrowserRouter } from "react-router-dom";
+import { ProtectedRoute } from "./ProtectedRoute.jsx";
+import { ErrorBoundary } from "react-error-boundary";
+import { CustomAlert } from "../src/components/Alert/CustomAlert.jsx";
+import App from "../src/App.jsx";
+import ErrorPage from "../src/ErrorPage.jsx";
+import { Prompt } from "../src/Prompt.jsx";
+import { NewCharacter } from "../src/NewCharacter.jsx";
+import { NewWorld } from "../src/NewWorld.jsx";
+import { AuthenticationPage } from "../src/AuthenticationPage/AuthenticationPage.jsx";
+
+const fallbackRender = ({ error }) => (
+  <CustomAlert
+    heading="Application error"
+    message={error.message}
+    variant="danger"
+    show
+    dismissible={false}
+  />
+);
 
 const router = createBrowserRouter([
   {
+    path: "/authenticate",
+    element: (
+      <ErrorBoundary fallbackRender={fallbackRender}>
+        <AuthenticationPage />
+      </ErrorBoundary>
+    ),
+  },
+  {
     path: "/",
-    element: <App />,
+    element: (
+      <ProtectedRoute>
+        <App />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {

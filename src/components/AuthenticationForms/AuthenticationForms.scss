@@ -1,0 +1,40 @@
+@use '../../scss/mixins';
+@use '../../scss/media-queries.scss' as *;
+@import '../../scss/variables';
+
+.form {
+  h3 {
+    color: rgba(29, 29, 29, 0.75);
+    margin-bottom: 1.5rem;
+  }
+
+  input, button {
+    width: 100%;
+    margin: 15px 0;
+    padding: 30px;
+    font-size: 20px;
+    border: solid 0.7rem $dark-gray;
+  }
+
+  input {
+    background: $gray2;
+    @include mixins.box-shadow(0, 0, 0.4rem, 0.12rem, rgba(0, 0, 0, 0.75), true);
+
+    &:active, &:focus {
+      background: $dark-gray2;
+      @include mixins.box-shadow(0, 0, 0.6rem, 0.18rem, rgba(0, 0, 0, 0.75), true);
+    }
+
+    &:hover, &:focus-visible {
+      outline: none;
+    }
+  }
+
+  button {
+    background: darken($dark-gray2, 20%);
+
+    &:hover, &:focus-visible {
+      @include mixins.gradient-radial(lighten($dark-gray2, 25%), darken($dark-gray2, 20%));
+    }
+  }
+}

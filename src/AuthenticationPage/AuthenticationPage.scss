@@ -1,0 +1,82 @@
+@use '../scss/mixins';
+@use '../scss/media-queries.scss' as *;
+@import '../scss/variables';
+
+.authentication-page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include mixins.gradient-directional($background-gray-lighter, $background-gray, $deg: 220deg);//
+
+  a:visited {
+    color: gray;
+    text-decoration: none;
+  }
+
+  &--wave {
+    position: absolute;
+    bottom: 0;
+    height: 150px;
+  }
+
+  &--outter-shadow {
+    @include mixins.box-shadow(-1.8rem, 0, 0.7rem, -0.8rem, rgba(37, 37, 37, 0.75), false);
+  }
+
+  &__form {
+    display: flex;
+    width: 800px;
+    @include mixins.linear-gradient(left, $linear-gradient1);
+    @include mixins.box-shadow(1.5rem, 0, 1rem, -0.8rem, rgba(29, 29, 29, 0.75), true);
+    border-radius: 0.4rem;
+
+    @include xs {
+      width: 100%;
+      border-radius: 0;
+      flex-direction: column;
+    }
+
+    @include sm {
+      width: 100%;
+    }
+    
+    &__menu {
+      border-right: solid 1px $gray;
+      padding: 1.4rem;
+      width: 30%;
+
+      ul {
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+
+        li {
+          color: rgba(29, 29, 29, 0.75);
+          list-style: none;
+          margin-bottom: 1rem;
+
+          div {
+            cursor: pointer;
+          }
+        }
+
+        @include xs {
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      @include xs {
+        border: none;
+        width: 100%;
+      }
+    }
+
+    &__wrapper {
+      border-left: solid 1px $darker-gray;
+      padding: 1.8rem;
+    }
+  }
+}
