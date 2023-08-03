@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import { ErrorBoundary } from "react-error-boundary";
+import { ToastContextProvider } from "../src/contexts/ToastContext.jsx";
 import { CustomAlert } from "../src/components/Alert/CustomAlert.jsx";
 import App from "../src/App.jsx";
 import ErrorPage from "../src/ErrorPage.jsx";
@@ -32,7 +33,11 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <ProtectedRoute>
-        <App />
+        <ErrorBoundary fallbackRender={fallbackRender}>
+          <ToastContextProvider>
+            <App />
+          </ToastContextProvider>
+        </ErrorBoundary>
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,

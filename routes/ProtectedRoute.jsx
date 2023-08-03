@@ -1,9 +1,9 @@
-import { useContext } from "react";
+import { useAuth } from "../src/hooks/useAuth";
 import { Navigate } from "react-router-dom";
-import { AuthContext } from "../src/Auth";
 
 const ProtectedRoute = ({ redirectPath = "/authenticate", children }) => {
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useAuth();
+
   if (!currentUser) {
     return <Navigate to={redirectPath} replace />;
   }

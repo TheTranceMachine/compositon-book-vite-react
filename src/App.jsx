@@ -1,10 +1,8 @@
 import { useState } from "react";
 import SplitPane, { Pane, SashContent } from "split-pane-react";
 import { Outlet, Link } from "react-router-dom";
-import ToastContainer from "react-bootstrap/ToastContainer";
 
 import { CustomNavbar } from "./components/Navbar/CustomNavbar";
-import { CustomToast } from "./components/Toast/CustomToast";
 import "./App.scss";
 
 import { Editor } from "./Editor";
@@ -32,15 +30,17 @@ const outletStyle = () => ({
 });
 
 const App = () => {
-  const [sizes, setSizes] = useState([50, "auto", 50]);
+  const [sizes, setSizes] = useState([200, "auto", 50]);
   const [context, setContext] = useState({});
+
+  const editorAction = (currentSelection) => {
+    setSizes([200, "auto", 600]);
+    setContext({ currentSelection });
+  };
 
   return (
     <div className="app">
       <CustomNavbar />
-      <ToastContainer className="app__toast-container" position="top-end">
-        <CustomToast />
-      </ToastContainer>
       <SplitPane
         split="vertical"
         sizes={sizes}
@@ -53,14 +53,14 @@ const App = () => {
           </SashContent>
         )}
       >
-        <Pane minSize={50} maxSize="50%">
+        <Pane minSize={200} maxSize="50%">
           <div style={style("#ddd")}>
             <Link to={`enhance`}>Prompt</Link>
           </div>
         </Pane>
         <Pane minSize={50} style={style("#ccc")}>
           <Editor
-            setContext={(currentSelection) => setContext({ currentSelection })}
+            setContext={(currentSelection) => editorAction(currentSelection)}
           />
         </Pane>
         <Pane minSize={50} style={outletStyle()}>

@@ -1,14 +1,20 @@
+import { useState } from "react";
 import Toast from "react-bootstrap/Toast";
 
-const CustomToast = () => (
-  <Toast>
-    <Toast.Header>
-      <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-      <strong className="me-auto">Bootstrap</strong>
-      <small>11 mins ago</small>
-    </Toast.Header>
-    <Toast.Body>Hello, world! This is a toast message.</Toast.Body>
-  </Toast>
-);
+const CustomToast = ({ type = "light", message }) => {
+  const [show, setShow] = useState(true);
+
+  return (
+    <Toast
+      bg={type}
+      onClose={() => setShow(false)}
+      show={show}
+      delay={3000}
+      autohide
+    >
+      <Toast.Body>{message}</Toast.Body>
+    </Toast>
+  );
+};
 
 export { CustomToast };
