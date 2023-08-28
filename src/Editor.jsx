@@ -1,12 +1,15 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import { editorStore, storeCurrentSelection } from "./reducers/editorReducer";
+import { useToast } from "./hooks/useToast";
 import styles from "./Editor.module.css";
 
-export const Editor = (props) => {
+export const Editor = ({ resizePanel }) => {
   const [editor, setEditor] = useState(null);
   const monacoEl = useRef(null);
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     const editorConfig = {
@@ -81,12 +84,13 @@ export const Editor = (props) => {
         contextMenuGroupId: "navigation",
         contextMenuOrder: 3,
         run: () => {
-          const currentSelection = editor
-            .getModel()
-            .getValueInRange(editor.getSelection());
-          console.log(currentSelection);
+          const range = editor.getSelection();
+          const currentSelection = editor.getModel().getValueInRange(range);
           if (currentSelection) {
-            props.setContext(currentSelection);
+            editorStore.dispatch(
+              storeCurrentSelection({ range, currentSelection }),
+            );
+            resizePanel();
             navigate("enhance");
           } else {
             alert(
@@ -96,6 +100,23 @@ export const Editor = (props) => {
         },
       });
     }
+  }, [editor]);
+
+  useEffect(() => {
+    const subscription = editorStore.subscribe(
+      ({ range, enhancedSelection }) => {
+        if (enhancedSelection !== "") {
+          const options = {
+            range,
+            text: enhancedSelection,
+          };
+          editor.executeEdits("enhance-text", [options]);
+          toast.success("Your text was enhanced!");
+        }
+      },
+    );
+
+    return () => subscription.unsubscribe();
   }, [editor]);
 
   return <div className={styles.Editor} ref={monacoEl}></div>;

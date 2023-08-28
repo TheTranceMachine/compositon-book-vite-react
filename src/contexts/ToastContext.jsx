@@ -1,46 +1,50 @@
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useState } from "react";
 import { CustomToastsContainer } from "../components/Toast/CustomToastsContainer";
-import { toastReducer } from "../reducers/toastReducer";
+import { toastStore, addToast, deleteToast } from "../reducers/toastReducer";
 
 export const ToastContext = createContext();
 
-const initialState = {
-  toasts: [],
-};
-
 export const ToastContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(toastReducer, initialState);
+  const initialState = toastStore.getState();
+  const [toasts, setToasts] = useState(initialState);
 
-  const addToast = (type, message) => {
+  useEffect(() => {
+    const subscription = toastStore.subscribe((state) => {
+      setToasts(state);
+    });
+    return () => subscription.unsubscribe();
+  });
+
+  const dispatchAddToast = (type, message) => {
     const id = Math.floor(Math.random() * 10000000);
-    dispatch({ type: "ADD_TOAST", payload: { id, message, type } });
+    toastStore.dispatch(addToast({ id, message, type }));
   };
 
-  const remove = (id) => {
-    dispatch({ type: "DELETE_TOAST", payload: id });
+  const dispatchDeleteToast = (id) => {
+    toastStore.dispatch(deleteToast({ id }));
   };
 
   const success = (message) => {
-    addToast("success", message);
+    dispatchAddToast("success", message);
   };
 
   const warning = (message) => {
-    addToast("warning", message);
+    dispatchAddToast("warning", message);
   };
 
   const info = (message) => {
-    addToast("info", message);
+    dispatchAddToast("info", message);
   };
 
   const error = (message) => {
-    addToast("danger", message);
+    dispatchAddToast("danger", message);
   };
 
-  const value = { success, warning, info, error, remove };
+  const value = { success, warning, info, error, dispatchDeleteToast };
 
   return (
     <ToastContext.Provider value={value}>
-      <CustomToastsContainer toasts={state.toasts} />
+      <CustomToastsContainer toasts={toasts.toasts} />
       {children}
     </ToastContext.Provider>
   );

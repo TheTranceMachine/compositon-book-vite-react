@@ -1,7 +1,6 @@
 import { useState } from "react";
 import SplitPane, { Pane, SashContent } from "split-pane-react";
 import { Outlet, Link } from "react-router-dom";
-
 import { CustomNavbar } from "./components/Navbar/CustomNavbar";
 import "./App.scss";
 
@@ -29,19 +28,27 @@ const outletStyle = () => ({
   rowGap: "20px",
 });
 
-const App = () => {
-  const [sizes, setSizes] = useState([200, "auto", 50]);
-  const [context, setContext] = useState({});
+const initialSizes = [200, "auto", 2];
 
-  const editorAction = (currentSelection) => {
+const App = () => {
+  const [sizes, setSizes] = useState(initialSizes);
+  const [allowResize, setAllowResize] = useState(false);
+
+  const lockView = () => {
+    setSizes(initialSizes);
+    setAllowResize(false);
+  };
+
+  const unlockView = () => {
     setSizes([200, "auto", 600]);
-    setContext({ currentSelection });
+    setAllowResize(true);
   };
 
   return (
     <div className="app">
       <CustomNavbar />
       <SplitPane
+        allowResize={allowResize}
         split="vertical"
         sizes={sizes}
         onChange={setSizes}
@@ -53,18 +60,16 @@ const App = () => {
           </SashContent>
         )}
       >
-        <Pane minSize={200} maxSize="50%">
+        <Pane minSize={200} maxSize={600}>
           <div style={style("#ddd")}>
             <Link to={`enhance`}>Prompt</Link>
           </div>
         </Pane>
         <Pane minSize={50} style={style("#ccc")}>
-          <Editor
-            setContext={(currentSelection) => editorAction(currentSelection)}
-          />
+          <Editor resizePanel={unlockView} />
         </Pane>
-        <Pane minSize={50} style={outletStyle()}>
-          <Outlet context={[context, setContext]} />
+        <Pane minSize={50} maxSize={600} style={outletStyle()}>
+          <Outlet context={[lockView]} />
         </Pane>
       </SplitPane>
     </div>

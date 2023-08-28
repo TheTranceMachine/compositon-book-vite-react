@@ -5,7 +5,7 @@ import { ToastContextProvider } from "../src/contexts/ToastContext.jsx";
 import { CustomAlert } from "../src/components/Alert/CustomAlert.jsx";
 import App from "../src/App.jsx";
 import ErrorPage from "../src/ErrorPage.jsx";
-import { Prompt } from "../src/Prompt.jsx";
+import { Prompt } from "../src/pages/Prompt/Prompt.jsx";
 import { NewCharacter } from "../src/NewCharacter.jsx";
 import { NewWorld } from "../src/NewWorld.jsx";
 import { AuthenticationPage } from "../src/AuthenticationPage/AuthenticationPage.jsx";
