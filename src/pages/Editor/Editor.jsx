@@ -1,8 +1,11 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { editorStore, storeCurrentSelection } from "./reducers/editorReducer";
-import { useToast } from "./hooks/useToast";
+import {
+  editorStore,
+  storeCurrentSelection,
+} from "../../reducers/editorReducer";
+import { useToast } from "../../hooks/useToast";
 import styles from "./Editor.module.css";
 
 export const Editor = ({ resizePanel }) => {

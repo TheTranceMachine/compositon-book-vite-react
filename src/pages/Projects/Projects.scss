@@ -1,0 +1,22 @@
+@use '../../scss/media-queries.scss' as *;
+
+.projects {
+  width: 100%;
+  height: calc(100vh - 56px);
+
+  &__list {
+    display: flex;
+    width: 44rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 3rem auto 3rem auto;
+
+    @include xs {
+      width: 19rem;
+    }
+
+    @include sm {
+      width: 32rem;
+    }
+  }
+}

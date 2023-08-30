@@ -3,11 +3,12 @@ import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import { ErrorBoundary } from "react-error-boundary";
 import { ToastContextProvider } from "../src/contexts/ToastContext.jsx";
 import { CustomAlert } from "../src/components/Alert/CustomAlert.jsx";
-import App from "../src/App.jsx";
+import Main from "../src/pages/Editor/Main.jsx";
 import ErrorPage from "../src/ErrorPage.jsx";
-import { Prompt } from "../src/pages/Prompt/Prompt.jsx";
+import { Prompt } from "../src/pages/Prompt/Prompt";
 import { NewCharacter } from "../src/NewCharacter.jsx";
 import { NewWorld } from "../src/NewWorld.jsx";
+import { Projects } from "../src/pages/Projects/Projects";
 import { AuthenticationPage } from "../src/AuthenticationPage/AuthenticationPage.jsx";
 
 const fallbackRender = ({ error }) => (
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <ErrorBoundary fallbackRender={fallbackRender}>
           <ToastContextProvider>
-            <App />
+            <Main />
           </ToastContextProvider>
         </ErrorBoundary>
       </ProtectedRoute>
@@ -55,6 +56,14 @@ const router = createBrowserRouter([
         element: <Prompt />,
       },
     ],
+  },
+  {
+    path: "/projects",
+    element: (
+      <ProtectedRoute>
+        <Projects />
+      </ProtectedRoute>
+    ),
   },
 ]);
 

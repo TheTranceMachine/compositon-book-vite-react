@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Button from "react-bootstrap/Button";
+import { FunctionArrayType } from "../../../types/types";
 import {
   editorStore,
   storeEnhancedSelection,
@@ -13,20 +14,20 @@ import "./Prompt.scss";
 
 export const Prompt = () => {
   const navigate = useNavigate();
-  const [editor, setEditor] = useState(null);
+  const [editor, setEditor] = useState();
   const [originalModel, setOriginalModel] = useState();
   const [modifiedModel, setModifiedModel] = useState();
   const [diffEditor, setDiffEditor] = useState();
   const editorState = editorStore.getState();
   const { currentSelection } = editorState;
 
-  const [lockView] = useOutletContext();
+  const [lockView]: FunctionArrayType = useOutletContext();
   const [enhancedText, setEnhancedText] = useState();
-  const monacoEl = useRef(null);
+  const monacoEl = useRef();
   const toast = useToast();
 
   const editorConfig = useCallback(
-    {
+    () => ({
       value: enhancedText ? enhancedText : currentSelection,
       automaticLayout: true,
       language: "plaintext",
@@ -35,7 +36,7 @@ export const Prompt = () => {
       contextmenu: true,
       lineNumbers: "off",
       readOnly: true,
-    },
+    }),
     [currentSelection],
   );
 
@@ -82,7 +83,7 @@ export const Prompt = () => {
     }
   }, [modifiedModel, originalModel, diffEditor]);
 
-  const sendPrompt = async (selection) => {
+  const sendPrompt = async (selection: Object) => {
     // TODO: check what happens when backend returns error instead of text
     const { text, error } = await promptAction({ selection, currentSelection });
     if (text) {
@@ -104,7 +105,7 @@ export const Prompt = () => {
 
   return (
     <div className="d-flex flex-column gap-2 container-fluid prompt">
-      <PromptDropdown onChange={(selection) => sendPrompt(selection)} />
+      <PromptDropdown onChange={(selection: Object) => sendPrompt(selection)} />
       <div className="prompt__editor" ref={monacoEl}></div>
       {enhancedText && (
         <Button variant="dark" size="md" onClick={storeEnhancedText}>

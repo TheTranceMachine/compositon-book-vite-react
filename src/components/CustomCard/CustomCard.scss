@@ -1,0 +1,19 @@
+@use '../../scss/media-queries.scss' as *;
+
+.custom-card {
+  width: 21rem;
+
+  @include xs {
+    width: 21rem;
+  }
+
+  @include sm {
+    width: 15rem;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
