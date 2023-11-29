@@ -4,7 +4,8 @@ import { FaPlus } from "react-icons/fa";
 const placeholder = (
   <>
     <Placeholder xs={6} />
-    <Placeholder className="w-75" /> <Placeholder style={{ width: "25%" }} />
+    <Placeholder className="w-75" />
+    <Placeholder style={{ width: "25%" }} />
   </>
 );
 const projectsList = [

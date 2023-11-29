@@ -1,0 +1,7 @@
+@use '../scss/mixins' as *;
+@use '../scss/variables' as *;
+
+.page {
+  @include page;
+  @include gradient-striped($gray2);
+}

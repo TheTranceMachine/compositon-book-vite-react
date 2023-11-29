@@ -1,12 +1,7 @@
-import { forwardRef } from "react";
-
-const ImageGenerator = forwardRef(({ input }, ref) => {
-  console.log(input);
-  return (
-    <div className="imageGenerator" ref={ref}>
-      Image Generator needs to be built
-    </div>
-  );
-});
+const ImageGenerator = () => (
+  <div className="imageGenerator top-50 start-50 translate-middle position-absolute">
+    Image Generator needs to be built
+  </div>
+);
 
 export { ImageGenerator };

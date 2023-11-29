@@ -1,22 +1,25 @@
 @use '../../scss/media-queries.scss' as *;
 
-.projects {
-  width: 100%;
-  height: calc(100vh - 56px);
+.newProject {
+  width: 75rem;
 
-  &__list {
-    display: flex;
+  @include sm {
     width: 44rem;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin: 3rem auto 3rem auto;
+  }
+}
 
-    @include xs {
-      width: 19rem;
-    }
+.projects__list {
+  display: flex;
+  width: 44rem;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin: 0 auto;
 
-    @include sm {
-      width: 32rem;
-    }
+  @include xs {
+    width: 19rem;
+  }
+
+  @include sm {
+    width: 32rem;
   }
 }

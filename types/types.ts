@@ -2,6 +2,8 @@ export type FunctionArrayType = Function[];
 
 export interface Project {
   projectId: string;
-  projectName: string;
-  projectDescription: string;
+  project: {
+    projectName: FormDataEntryValue;
+    projectDescription: FormDataEntryValue;
+  };
 }

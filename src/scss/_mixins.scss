@@ -1,8 +1,13 @@
+@mixin page() {
+  width: 100%;
+  height: calc(100vh - 5.9rem);
+}
+
 @mixin box-shadow($top, $left, $blur, $spread, $color, $inset: false) {
   @if $inset {
-    -webkit-box-shadow:inset $top $left $blur $spread $color;
-    -moz-box-shadow:inset $top $left $blur $spread $color;
-    box-shadow:inset $top $left $blur $spread $color;
+    -webkit-box-shadow: inset $top $left $blur $spread $color;
+    -moz-box-shadow: inset $top $left $blur $spread $color;
+    box-shadow: inset $top $left $blur $spread $color;
   } @else {
     -webkit-box-shadow: $top $left $blur $spread $color;
     -moz-box-shadow: $top $left $blur $spread $color;
@@ -10,11 +15,11 @@
   }
 }
 
-@mixin linear-gradient($direction, $list) { 
+@mixin linear-gradient($direction, $list) {
   background: -webkit-linear-gradient($direction, $list);
   background: -moz-linear-gradient($direction, $list);
   background: -o-linear-gradient($direction, $list);
-  background: linear-gradient($direction, $list);  
+  background: linear-gradient($direction, $list);
 }
 
 @mixin gradient-directional($start-color, $end-color, $deg: 45deg) {
@@ -25,3 +30,15 @@
   background-image: radial-gradient(circle, $inner-color, $outer-color);
 }
 
+@mixin gradient-striped($color: rgba(gray, 0.15), $angle: 45deg) {
+  background-image: linear-gradient(
+    $angle,
+    $color 25%,
+    transparent 25%,
+    transparent 50%,
+    $color 50%,
+    $color 75%,
+    transparent 75%,
+    transparent
+  );
+}
