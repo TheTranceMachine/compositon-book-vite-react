@@ -66,7 +66,7 @@ const CustomNavbar = () => {
     >
       <Container fluid>
         <Navbar.Brand>Composition book</Navbar.Brand>
-        <div className="custom-navbar__right">
+        <div className="custom-navbar__right d-flex gap-2">
           <UserAvatarDropdown
             currentUser={currentUser}
             showSettingsModal={() => setSettingsModalShow(true)}
