@@ -61,7 +61,9 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <ErrorBoundary fallbackRender={fallbackRender}>
-          <ProjectsPage />
+          <ToastContextProvider>
+            <ProjectsPage />
+          </ToastContextProvider>
         </ErrorBoundary>
       </ProtectedRoute>
     ),

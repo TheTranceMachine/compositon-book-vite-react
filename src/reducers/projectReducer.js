@@ -1,18 +1,24 @@
-import { actionFactory, createReducer, createStore } from "@zedux/react";
+import { actionFactory, createReducer, createStore } from '@zedux/react';
 
-const storeProjectData = actionFactory("updateProject");
+const storeSelectedProject = actionFactory('selectedProject');
+const storeAllProjects = actionFactory('allProjects');
 
 const initialState = {
-  projectId: "",
-  projectName: "",
-  projectDescription: ""
+  selectedProject: {},
+  projects: {},
 };
 
 const reducer = createReducer(initialState)
-  .reduce(storeProjectData, (state, { projectId, projectName, projectDescription }) => {
-    return { ...state, projectId, projectName, projectDescription };
+  .reduce(
+    storeSelectedProject,
+    (state, selectedProject) => {
+      return { ...state, selectedProject };
+    },
+  )
+  .reduce(storeAllProjects, (state, projects) => {
+    return { ...state, projects };
   });
 
 const projectStore = createStore(reducer);
 
-export { projectStore, storeProjectData };
+export { projectStore, storeSelectedProject, storeAllProjects };

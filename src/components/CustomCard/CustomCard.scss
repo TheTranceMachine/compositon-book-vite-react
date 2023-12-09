@@ -11,9 +11,10 @@
     width: 15rem;
   }
 
-  &__footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  &__body .card-text {
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
   }
 }

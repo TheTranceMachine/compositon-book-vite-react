@@ -1,16 +1,50 @@
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import "./CustomCard.scss";
+import React from 'react';
+import { Card, ListGroup, Button } from 'react-bootstrap';
+import './CustomCard.scss';
 
-const CustomCard = ({ placeholder, name, buttonText, onClick }) => (
-  <Card className="custom-card">
-    <Card.Header className="custom-card__header">{placeholder}</Card.Header>
-    <Card.Body className="custom-card__footer">
-      <div>{name}</div>
-      <Button variant="dark" size="sm" onClick={() => onClick(name)}>
+interface CustomCardPropTypes {
+  timeStamp?: string;
+  backgroundColor: string;
+  textColor: string;
+  className?: string;
+  buttonText: string;
+  title: string;
+  description: string;
+  onEdit: () => void;
+  onDelete?: () => void;
+}
+
+const CustomCard = ({
+  timeStamp,
+  backgroundColor,
+  textColor,
+  className,
+  buttonText,
+  title,
+  description,
+  onEdit,
+  onDelete,
+}: CustomCardPropTypes) => (
+  <Card className={`custom-card ${className ? className : ''}`} bg={backgroundColor} text={textColor}>
+    <Card.Header>{title}</Card.Header>
+    <Card.Body className="custom-card__body">
+      <Card.Text>{description}</Card.Text>
+    </Card.Body>
+    {timeStamp && (
+      <ListGroup className="list-group-flush">
+        <ListGroup.Item className={`bg-${backgroundColor} text-truncate`}>Created: {timeStamp}</ListGroup.Item>
+      </ListGroup>
+    )}
+    <Card.Footer className="btn-group">
+      {onDelete && (
+        <Button variant="dark" size="sm" onClick={onDelete}>
+          Delete
+        </Button>
+      )}
+      <Button variant="dark" size="sm" onClick={onEdit}>
         {buttonText}
       </Button>
-    </Card.Body>
+    </Card.Footer>
   </Card>
 );
 

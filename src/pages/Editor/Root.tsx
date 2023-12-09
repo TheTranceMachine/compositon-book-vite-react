@@ -32,7 +32,9 @@ const Root = () => {
   const [sizes, setSizes] = useState(initialSizes);
   const [allowResize, setAllowResize] = useState(false);
   const projectState = projectStore.getState();
-  const { projectName } = projectState;
+  const {
+    selectedProject: { projectName },
+  } = projectState;
 
   const lockView = () => {
     setSizes(initialSizes);

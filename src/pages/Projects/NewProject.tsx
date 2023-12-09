@@ -1,21 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { projectStore, storeProjectData } from '../../reducers/projectReducer.js';
+import { IoDocumentsOutline, IoBulbOutline } from 'react-icons/io5';
+import { projectStore, storeSelectedProject } from '../../reducers/projectReducer.js';
 import { useToast } from '../../hooks/useToast.jsx';
 import { CustomAlert } from '../../components/Alert/CustomAlert.jsx';
-import { Project } from '../../../types/types';
 import { useAuth } from '../../hooks/useAuth';
 import { db } from '../../../config/firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
 import { ImageGenerator } from '../../components/ImageGenerator/ImageGenerator';
 import './Projects.scss';
-
-const setProjectInLocalStorage = ({ projectId, project }: Project) => {
-  projectStore.dispatch(
-    storeProjectData({ projectId, projectName: project.projectName, projectDescription: project.projectDescription }),
-  );
-};
 
 const NewProject = () => {
   const [error, setError] = useState('');
@@ -40,20 +34,23 @@ const NewProject = () => {
     const form: HTMLFormElement = e.target;
     const formData: FormData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
-    console.log(formJson);
-    const title: FormDataEntryValue = formJson.title;
-    const description: FormDataEntryValue = formJson.description;
+    const projectName: FormDataEntryValue = formJson.title;
+    const projectDescription: FormDataEntryValue = formJson.description;
 
-    if (title !== '' && description !== '') {
-      const project = {
-        projectName: title,
-        projectDescription: description,
-      };
+    if (projectName !== '' && projectDescription !== '') {
       const { uid } = currentUser;
       try {
-        const { id: projectId } = await addDoc(collection(db, `users/${uid}/projects/`), project);
+        const { id: projectId } = await addDoc(collection(db, `users/${uid}/projects/`), {
+          projectName,
+          projectDescription,
+        });
 
-        setProjectInLocalStorage({ projectId, project });
+        const date: Date = new Date();
+        const projectCreationTimestamp = date.toLocaleString('en-EN', { timeZone: 'UTC' });
+
+        projectStore.dispatch(
+          storeSelectedProject({ projectId, projectCreationTimestamp, projectName, projectDescription }),
+        );
         setNextButton(true);
         toast.success('Your project was created successfully!');
       } catch (e) {
@@ -94,8 +91,17 @@ const NewProject = () => {
                 />
               </Form.Group>
               <div className="btn-group w-100">
-                <Button variant="outline-primary" size="lg" type="submit" disabled={nextButton} className="w-50">
-                  Create
+                <Button
+                  variant="outline-primary"
+                  size="lg"
+                  type="button"
+                  className="w-50"
+                  onClick={() => navigate('/projects')}
+                >
+                  <IoDocumentsOutline /> All Projects
+                </Button>
+                <Button variant="primary" size="lg" type="submit" disabled={nextButton} className="w-50">
+                  Create New Project
                 </Button>
                 <Button
                   variant="outline-primary"
@@ -105,7 +111,7 @@ const NewProject = () => {
                   className="w-50"
                   onClick={() => navigate('/')}
                 >
-                  Go to Your Project
+                  <IoBulbOutline /> New Project
                 </Button>
               </div>
             </Form>
