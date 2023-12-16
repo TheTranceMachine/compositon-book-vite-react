@@ -14,7 +14,13 @@ import { NewCharacter } from '../src/NewCharacter.jsx';
 import { NewWorld } from '../src/NewWorld.jsx';
 
 const ProjectsPage = asPage(Projects);
+const projectPageLinks = [{ id: 1, name: 'Projects', link: '/projects' }];
+
 const NewProjectPage = asPage(NewProject);
+const newProjectPageLinks = [
+  { id: 1, name: 'Projects', link: '/projects' },
+  { id: 2, name: 'New Project', link: '/projects/new' },
+];
 
 const fallbackRender = ({ error }) => (
   <CustomAlert heading="Application error" message={error.message} variant="danger" show dismissible={false} />
@@ -62,7 +68,7 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <ErrorBoundary fallbackRender={fallbackRender}>
           <ToastContextProvider>
-            <ProjectsPage />
+            <ProjectsPage breadcrumbs={projectPageLinks} />
           </ToastContextProvider>
         </ErrorBoundary>
       </ProtectedRoute>
@@ -75,7 +81,7 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <ErrorBoundary fallbackRender={fallbackRender}>
           <ToastContextProvider>
-            <NewProjectPage />
+            <NewProjectPage breadcrumbs={newProjectPageLinks} />
           </ToastContextProvider>
         </ErrorBoundary>
       </ProtectedRoute>
