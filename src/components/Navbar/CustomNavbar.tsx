@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
-import Offcanvas from "react-bootstrap/Offcanvas";
-import { updateProfile, signOut } from "firebase/auth";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { auth, storage } from "../../../config/firebaseConfig";
-import { useAuth } from "../../hooks/useAuth";
-import { useToast } from "../../hooks/useToast";
-import { SettingsModal } from "../Modal/SettingsModal";
-import { FileUploadModal } from "../Modal/FileUploadModal";
-import { UserAvatarDropdown } from "../UserAvatarDropdown/UserAvatarDropdown.jsx";
-import "./CustomNavbar.scss";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import { updateProfile, signOut } from 'firebase/auth';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { auth, storage } from '../../../config/firebaseConfig';
+import { useAuth } from '../../hooks/useAuth';
+import { useToast } from '../../hooks/useToast';
+import { SettingsModal } from '../Modal/SettingsModal';
+import { FileUploadModal } from '../Modal/FileUploadModal';
+import { UserAvatarDropdown } from '../UserAvatarDropdown/UserAvatarDropdown.jsx';
+import './CustomNavbar.scss';
 
 const CustomNavbar = () => {
-  const [settingsEditable, setSettingsEditable] = useState(false);
+  const [settingsEditable, setSettingsEditable] = useState<boolean>(false);
   const [profilePicEditable, setProfilePicEditable] = useState(false);
   const [settingsModalShow, setSettingsModalShow] = useState(false);
   const [picModalShow, setPicModalShow] = useState(false);
@@ -30,7 +30,7 @@ const CustomNavbar = () => {
     })
       .then(() => {
         setSettingsEditable(false);
-        toast.success("Your user was updated");
+        toast.success('Your user was updated');
       })
       .catch((error) => toast.error(error.message));
   };
@@ -38,7 +38,7 @@ const CustomNavbar = () => {
   const userSignOut = () => {
     signOut(auth)
       .then(() => {
-        navigate("/authenticate");
+        navigate('/authenticate');
       })
       .catch((error) => console.log(error));
   };
@@ -59,11 +59,7 @@ const CustomNavbar = () => {
   };
 
   return (
-    <Navbar
-      key={expand}
-      expand={expand}
-      className="custom-navbar bg-body-tertiary"
-    >
+    <Navbar key={expand} expand={expand} className="custom-navbar bg-body-tertiary">
       <Container fluid>
         <Navbar.Brand>Composition book</Navbar.Brand>
         <div className="custom-navbar__right d-flex gap-2">
@@ -81,9 +77,7 @@ const CustomNavbar = () => {
           placement="end"
         >
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
-              Offcanvas
-            </Offcanvas.Title>
+            <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>Offcanvas</Offcanvas.Title>
           </Offcanvas.Header>
         </Navbar.Offcanvas>
       </Container>

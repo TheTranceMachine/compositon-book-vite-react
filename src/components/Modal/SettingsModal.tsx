@@ -1,28 +1,33 @@
-import { useRef } from "react";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
-import ListGroup from "react-bootstrap/ListGroup";
+import { FormEvent, Dispatch, MutableRefObject, SetStateAction, useRef } from 'react';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import ListGroup from 'react-bootstrap/ListGroup';
 
-const SettingsModal = ({
-  currentUser,
-  updateUser,
-  editable,
-  setEditable,
-  show,
-  setShow,
-}) => {
+interface SettingsModalPropTypes {
+  currentUser: {
+    displayName: string;
+    email: string;
+  };
+  updateUser: (name: string, email: string) => void;
+  editable: boolean;
+  setEditable: Dispatch<SetStateAction<boolean>>;
+  show: boolean;
+  setShow: Dispatch<SetStateAction<boolean>>;
+}
+
+const SettingsModal = ({ currentUser, updateUser, editable, setEditable, show, setShow }: SettingsModalPropTypes) => {
   let { displayName, email } = currentUser;
 
-  displayName = useRef(displayName);
-  const setDisplayName = (e) => {
-    displayName.current = e.target.value;
+  const displayNameRef = useRef(displayName);
+  const setDisplayName = (e: FormEvent<HTMLInputElement>) => {
+    displayNameRef.current = e.target.value;
   };
 
-  email = useRef(email);
-  const setEmail = (e) => {
-    email.current = e.target.value;
+  const emailRef = useRef(email);
+  const setEmail = (e: FormEvent<HTMLInputElement>) => {
+    emailRef.current = e.target.value;
   };
 
   return (
@@ -40,7 +45,7 @@ const SettingsModal = ({
                 aria-describedby="modal-input-name"
                 readOnly={!editable}
                 disabled={!editable}
-                defaultValue={displayName.current}
+                defaultValue={displayNameRef.current}
                 onChange={setDisplayName}
               />
             </InputGroup>
@@ -53,7 +58,7 @@ const SettingsModal = ({
                 aria-describedby="modal-input-email"
                 readOnly={!editable}
                 disabled={!editable}
-                defaultValue={email.current}
+                defaultValue={emailRef.current}
                 onChange={setEmail}
               />
             </InputGroup>
@@ -65,17 +70,11 @@ const SettingsModal = ({
           Close
         </Button>
         {!editable ? (
-          <Button
-            variant="warning"
-            onClick={() => setEditable((editable) => !editable)}
-          >
+          <Button variant="warning" onClick={() => setEditable((editable) => !editable)}>
             Edit
           </Button>
         ) : (
-          <Button
-            variant="primary"
-            onClick={() => updateUser(displayName.current, email.current)}
-          >
+          <Button variant="primary" onClick={() => updateUser(displayNameRef.current, emailRef.current)}>
             Save Changes
           </Button>
         )}

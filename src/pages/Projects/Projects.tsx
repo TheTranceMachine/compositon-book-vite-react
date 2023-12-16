@@ -35,7 +35,9 @@ const Projects = () => {
       if (project._document) {
         const timestamp = project._document.createTime.timestamp.seconds;
         const date = new Date(timestamp * 1000);
-        projectCreationTimestamp = date.toLocaleString('en-EN', { timeZone: 'UTC' });
+        projectCreationTimestamp = date.toLocaleString('en-US', {
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        });
       }
 
       const projectId = project.id;
