@@ -5,7 +5,7 @@ import { ToastContextProvider } from '../src/contexts/ToastContext.jsx';
 import { AuthenticationPage } from '../src/AuthenticationPage/AuthenticationPage.jsx';
 import { asPage } from '../src/pages/Page';
 import ErrorPage from '../src/ErrorPage.jsx';
-import Main from '../src/pages/Editor/Main.jsx';
+import { Workspace } from '../src/pages/Workspace/Workspace.tsx';
 import { NewProject } from '../src/pages/Projects/NewProject';
 import { Projects } from '../src/pages/Projects/Projects';
 import { Prompt } from '../src/pages/Prompt/Prompt';
@@ -17,10 +17,10 @@ const ProjectsPage = asPage(Projects);
 const projectPageLinks = [{ id: 1, name: 'Projects', link: '/projects' }];
 
 const NewProjectPage = asPage(NewProject);
-const newProjectPageLinks = [
-  { id: 1, name: 'Projects', link: '/projects' },
-  { id: 2, name: 'New Project', link: '/projects/new' },
-];
+const newProjectPageLinks = [...projectPageLinks, { id: 2, name: 'New Project', link: '/projects/new' }];
+
+const WorkSpacePage = asPage(Workspace);
+const workSpacePageLinks = [...projectPageLinks, { id: 1, name: 'Workspace', link: 'project/workspace' }];
 
 const fallbackRender = ({ error }) => (
   <CustomAlert heading="Application error" message={error.message} variant="danger" show dismissible={false} />
@@ -41,7 +41,7 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <ErrorBoundary fallbackRender={fallbackRender}>
           <ToastContextProvider>
-            <Main />
+            <WorkSpacePage breadcrumbs={workSpacePageLinks} />
           </ToastContextProvider>
         </ErrorBoundary>
       </ProtectedRoute>
