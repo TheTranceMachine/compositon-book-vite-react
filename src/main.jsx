@@ -8,7 +8,7 @@ import 'bootswatch/dist/sandstone/bootstrap.min.css'; // Using bootswatch theme
 import "split-pane-react/esm/themes/default.css";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { router } from "../routes/index.jsx";
-import "./index.scss";
+import "./tailwind-index.scss";
 import "./userWorkers.js"; 
 
 ReactDOM.createRoot(document.getElementById("root")).render(

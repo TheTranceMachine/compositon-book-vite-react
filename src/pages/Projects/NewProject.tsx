@@ -31,7 +31,7 @@ const NewProject = () => {
 
   const createNewProject = async (e: Event): Promise<void> => {
     e.preventDefault();
-    const form: HTMLFormElement = e.target;
+    const form = e.target as HTMLFormElement;
     const formData: FormData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
     const projectName: FormDataEntryValue = formJson.title;

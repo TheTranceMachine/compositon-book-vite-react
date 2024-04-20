@@ -5,28 +5,6 @@ import { projectStore } from '../../reducers/projectReducer.js';
 import { Editor } from '../../components/Editor/Editor.jsx';
 import './Workspace.scss';
 
-const style = (color: string) => {
-  return {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: color,
-  };
-};
-
-const outletStyle = () => ({
-  height: '100%',
-  display: 'flex',
-  alignItems: 'stretch',
-  backgroundColor: 'rgb(238, 238, 238)',
-  flexDirection: 'column',
-  flexWrap: 'wrap',
-  alignContent: 'center',
-  justifyContent: 'flex-start',
-  rowGap: '20px',
-});
-
 const initialSizes = [200, 'auto', 2];
 
 const Workspace = () => {
@@ -48,7 +26,7 @@ const Workspace = () => {
   };
 
   return (
-    <div className="workspace">
+    <div className="w-full h-full">
       <SplitPane
         allowResize={allowResize}
         split="vertical"
@@ -63,10 +41,10 @@ const Workspace = () => {
         <Pane minSize={200} maxSize={600}>
           <h4>{projectName}</h4>
         </Pane>
-        <Pane minSize={50} style={style('#ccc')}>
+        <Pane minSize={50} className='flex justify-center items-center bg-[#ccc] h-full'>
           <Editor resizePanel={unlockView} />
         </Pane>
-        <Pane minSize={50} maxSize={600} style={outletStyle()}>
+        <Pane minSize={50} maxSize={600} className='flex flex-col flex-wrap justify-start items-center gap-y-3 h-full bg-[rgb(238, 238, 238)]'>
           <Outlet context={[lockView]} />
         </Pane>
       </SplitPane>

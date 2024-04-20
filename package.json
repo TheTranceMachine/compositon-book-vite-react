@@ -4,17 +4,21 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc --noEmit --watch && vite build",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\" --config ./.prettierrc.json"
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\" --config ./.prettierrc.json",
+    "watch-prettier": "onchange 'src/**/*.jsx' 'src/**/*.tsx' -- prettier --write {{changed}}",
+    "watch-css": "npx tailwindcss -i ./src/index.scss -o ./src/tailwind-index.scss --watch",
+    "watch-dev": "vite --host",
+    "dev": "concurrently \"npm:watch-*\""
   },
   "dependencies": {
     "@zedux/react": "^1.1.0",
     "bootstrap": "^5.3.0",
     "bootswatch": "^5.3.2",
+    "concurrently": "^8.2.2",
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "firebase": "^10.0.0",
@@ -25,7 +29,6 @@
     "react-error-boundary": "^4.0.10",
     "react-icons": "^4.10.1",
     "react-router-dom": "^6.14.1",
-    "sass": "^1.63.6",
     "split-pane-react": "^0.1.3",
     "typescript": "^5.2.2"
   },
@@ -42,7 +45,10 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "onchange": "^7.1.0",
     "prettier": "^3.1.0",
+    "sass": "^1.69.5",
+    "tailwindcss": "^3.4.3",
     "vite": "^4.3.9",
     "vite-plugin-svgr": "^3.2.0"
   }

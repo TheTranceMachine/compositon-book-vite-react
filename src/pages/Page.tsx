@@ -18,13 +18,13 @@ export function asPage<P extends AsPagePropTypes>(
     const { breadcrumbs } = props;
     // At this point, the props being passed in are the original props the component expects.
     return (
-      <>
+      <div className='h-screen'>
         <CustomNavbar />
         <Breadcrumbs pages={breadcrumbs} />
-        <div className="page d-flex align-items-center justify-content-center">
+        <div className="flex page">
           <WrappedComponent {...props} />
         </div>
-      </>
+      </div>
     );
   };
   return ComponentAsPage;
