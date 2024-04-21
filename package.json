@@ -8,8 +8,8 @@
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\" --config ./.prettierrc.json",
-    "watch-prettier": "onchange 'src/**/*.jsx' 'src/**/*.tsx' -- prettier --write {{changed}}",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\" --config ./.prettierrc",
+    "watch-prettier": "onchange \"src/**/*.{js,jsx,ts,tsx}\" -- prettier --config ./.prettierrc --write {{changed}}",
     "watch-css": "npx tailwindcss -i ./src/index.scss -o ./src/tailwind-index.scss --watch",
     "watch-dev": "vite --host",
     "dev": "concurrently \"npm:watch-*\""

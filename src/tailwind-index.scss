@@ -566,37 +566,12 @@ video {
   display: flex;
 }
 
-.h-screen {
-  height: 100vh;
-}
-
-.h-svh {
-  height: 100svh;
-}
-
 .h-full {
   height: 100%;
 }
 
-.h-lvh {
-  height: 100lvh;
-}
-
-.h-dvh {
-  height: 100dvh;
-}
-
-.h-3\/4 {
-  height: 75%;
-}
-
-.h-auto {
-  height: auto;
-}
-
-.h-max {
-  height: -moz-max-content;
-  height: max-content;
+.h-screen {
+  height: 100vh;
 }
 
 .w-full {
