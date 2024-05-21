@@ -21,7 +21,7 @@ export function asPage<P extends AsPagePropTypes>(
       <div className="h-screen">
         <CustomNavbar />
         <Breadcrumbs pages={breadcrumbs} />
-        <div className="flex page">
+        <div className="flex page justify-center">
           <WrappedComponent {...props} />
         </div>
       </div>

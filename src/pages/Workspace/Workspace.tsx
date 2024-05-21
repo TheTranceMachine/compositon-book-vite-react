@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import SplitPane, { Pane, SashContent } from 'split-pane-react';
-import { Outlet } from 'react-router-dom';
-import { projectStore } from '../../reducers/projectReducer.js';
-import { Editor } from '../../components/Editor/Editor.jsx';
-import './Workspace.scss';
+import { useState } from "react";
+import SplitPane, { Pane, SashContent } from "split-pane-react";
+import { Outlet } from "react-router-dom";
+import { projectStore } from "../../reducers/projectReducer.js";
+import MonacoEditor from "../../components/Editor/Editor.jsx";
+import "./Workspace.scss";
 
-const initialSizes = [200, 'auto', 2];
+const initialSizes = [200, "auto", 2];
 
 const Workspace = () => {
   const [sizes, setSizes] = useState(initialSizes);
@@ -21,7 +21,7 @@ const Workspace = () => {
   };
 
   const unlockView = () => {
-    setSizes([200, 'auto', 600]);
+    setSizes([200, "auto", 600]);
     setAllowResize(true);
   };
 
@@ -33,7 +33,7 @@ const Workspace = () => {
         sizes={sizes}
         onChange={setSizes}
         sashRender={(index, active) => (
-          <SashContent className={`sash-wrap-line ${active ? 'active' : 'inactive'}`}>
+          <SashContent className={`sash-wrap-line ${active ? "active" : "inactive"}`}>
             <span className="line" />
           </SashContent>
         )}
@@ -41,10 +41,14 @@ const Workspace = () => {
         <Pane minSize={200} maxSize={600}>
           <h4>{projectName}</h4>
         </Pane>
-        <Pane minSize={50} className='flex justify-center items-center bg-[#ccc] h-full'>
-          <Editor resizePanel={unlockView} />
+        <Pane minSize={50} className="flex justify-center items-center bg-[#ccc] h-full">
+          <MonacoEditor resizePanel={unlockView} />
         </Pane>
-        <Pane minSize={50} maxSize={600} className='flex flex-col flex-wrap justify-start items-center gap-y-3 h-full bg-[rgb(238, 238, 238)]'>
+        <Pane
+          minSize={50}
+          maxSize={600}
+          className="flex flex-col flex-wrap justify-start items-center gap-y-3 h-full bg-[rgb(238, 238, 238)]"
+        >
           <Outlet context={[lockView]} />
         </Pane>
       </SplitPane>
