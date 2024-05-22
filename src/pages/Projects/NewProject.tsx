@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoDocumentsOutline, IoBulbOutline } from "react-icons/io5";
+import { CustomSpinner } from "../../components/Spinner/CustomSpinner";
 import { projectStore, storeSelectedProject } from "../../reducers/projectReducer.js";
 import { useToast } from "../../hooks/useToast.jsx";
 import { CustomAlert } from "../../components/Alert/CustomAlert.jsx";
@@ -12,6 +13,7 @@ import { ImageGenerator } from "../../components/ImageGenerator/ImageGenerator";
 import "./Projects.scss";
 
 const NewProject = () => {
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showAlert, setShowAlert] = useState(true);
   const [nextButton, setNextButton] = useState(false);
@@ -31,6 +33,7 @@ const NewProject = () => {
 
   const createNewProject = async (e: Event): Promise<void> => {
     e.preventDefault();
+    setLoading(true);
     const form = e.target as HTMLFormElement;
     const formData: FormData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
@@ -59,11 +62,15 @@ const NewProject = () => {
     } else {
       setError("Please provide the name and description of the project");
     }
+    setLoading(false);
   };
 
   return (
-    <div className="newProject flex items-center">
-      <div className="flex justify-center w-full gap-3 flex-col sm:flex-row">
+    <div className="newProject flex items-center justify-center">
+      {loading && (
+        <CustomSpinner height="100px" width="100px" className="absolute bg-slate-300 w-full h-[90vh] z-10 opacity-70" />
+      )}
+      <div className="flex justify-center w-full gap-3 flex-col sm:flex-row p-2">
         <div className="border border-primary position-relative">
           <ImageGenerator />
         </div>
@@ -94,7 +101,7 @@ const NewProject = () => {
                 variant="outline-primary"
                 size="lg"
                 type="button"
-                className="w-50"
+                className="w-50 flex items-center justify-center gap-2"
                 onClick={() => navigate("/projects")}
               >
                 <IoDocumentsOutline /> All Projects
@@ -107,7 +114,7 @@ const NewProject = () => {
                 size="lg"
                 type="button"
                 disabled={!nextButton}
-                className="w-50"
+                className="w-50 flex items-center justify-center gap-2"
                 onClick={() => navigate("/")}
               >
                 <IoBulbOutline /> New Project

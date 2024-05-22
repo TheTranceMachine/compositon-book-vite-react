@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+import { CustomSpinner } from "../../components/Spinner/CustomSpinner";
 import { db } from "../../../config/firebaseConfig";
 import { useAuth } from "../../hooks/useAuth";
 import { useToast } from "../../hooks/useToast";
@@ -11,13 +12,17 @@ import {
   ProjectsCollectionSnapshotTypes,
   ProjectStoreTypes,
 } from "../../../types/types";
-import { ProjectDeletionModal } from "../../components/Modal/ProjectDeletionModal";
-import { CustomCard } from "../../components/CustomCard/CustomCard";
+import CustomCard from "../../components/CustomCard/CustomCard";
 import "./Projects.scss";
 
+const ProjectDeletionModal = lazy(() => import("../../components/Modal/ProjectDeletionModal"));
+
 const Projects = () => {
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const toast = useToast();
+
+  console.log("TEST");
 
   const { currentUser } = useAuth();
   const { uid } = currentUser;
@@ -28,6 +33,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     const snapshots = await getDocs(collection(db, `users/${uid}/projects/`));
+    setLoading(false);
 
     const projects: Array<object> = [];
     snapshots.forEach((project: ProjectsCollectionSnapshotTypes) => {
@@ -67,6 +73,7 @@ const Projects = () => {
 
   const deleteProject = async () => {
     try {
+      setLoading(true);
       await deleteDoc(doc(db, `users/${uid}/projects/${projectModal.projectId}`));
       setProjectModal(modalInitialProps);
       fetchProjects();
@@ -78,40 +85,49 @@ const Projects = () => {
 
   return (
     <div className="projects flex items-center">
-      <div className="flex flex-wrap gap-2 m-auto lg:w-[43rem] md:w-[31rem] projects__list">
-        <CustomCard
-          key="New Project"
-          title="New Project"
-          description="Start a new Writing Project"
-          buttonText="New Project"
-          onEdit={() => navigate("/projects/new")}
-          backgroundColor="light"
-          textColor="dark"
-          className={projects.length > 0 ? "" : "w-100"}
-        />
-        {projects.length
-          ? projects.map(({ projectId, projectCreationTimestamp, projectName, projectDescription }: Project) => (
-              <CustomCard
-                key={projectId}
-                title={projectName}
-                description={projectDescription}
-                timeStamp={projectCreationTimestamp}
-                buttonText="Go to project"
-                onEdit={() => chooseProject({ projectId, projectCreationTimestamp, projectName, projectDescription })}
-                backgroundColor="light"
-                textColor="dark"
-                onDelete={() => setProjectModal({ show: true, projectId, projectName })}
-              />
-            ))
-          : null}
-      </div>
-      <ProjectDeletionModal
-        show={projectModal.show}
-        setShow={() => setProjectModal(modalInitialProps)}
-        onDelete={deleteProject}
-        onCancel={() => setProjectModal(modalInitialProps)}
-        projectName={projectModal.projectName}
-      />
+      {loading && <CustomSpinner height="100px" width="100px" />}
+      {!loading && (
+        <>
+          <div className="flex flex-wrap gap-2 m-auto lg:w-[43rem] md:w-[31rem] projects__list">
+            <CustomCard
+              key="New Project"
+              title="New Project"
+              description="Start a new Writing Project"
+              buttonText="New Project"
+              onEdit={() => navigate("/projects/new")}
+              backgroundColor="light"
+              textColor="dark"
+              className={projects.length > 0 ? "" : "w-100"}
+            />
+            {projects.length
+              ? projects.map(({ projectId, projectCreationTimestamp, projectName, projectDescription }: Project) => (
+                  <CustomCard
+                    key={projectId}
+                    title={projectName}
+                    description={projectDescription}
+                    timeStamp={projectCreationTimestamp}
+                    buttonText="Go to project"
+                    onEdit={() =>
+                      chooseProject({ projectId, projectCreationTimestamp, projectName, projectDescription })
+                    }
+                    backgroundColor="light"
+                    textColor="dark"
+                    onDelete={() => setProjectModal({ show: true, projectId, projectName })}
+                  />
+                ))
+              : null}
+          </div>
+          <Suspense>
+            <ProjectDeletionModal
+              show={projectModal.show}
+              setShow={() => setProjectModal(modalInitialProps)}
+              onDelete={deleteProject}
+              onCancel={() => setProjectModal(modalInitialProps)}
+              projectName={projectModal.projectName}
+            />
+          </Suspense>
+        </>
+      )}
     </div>
   );
 };

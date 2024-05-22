@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
   return (
     <>
       {pending ? (
-        <CustomSpinner />
+        <CustomSpinner className="bg-gray-950 h-[100vh]" height="200px" width="200px" />
       ) : (
         <AuthContext.Provider
           value={{

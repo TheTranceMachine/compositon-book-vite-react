@@ -1,4 +1,4 @@
-import { ButtonGroup, Button, Modal } from 'react-bootstrap';
+import { ButtonGroup, Button, Modal } from "react-bootstrap";
 
 type ProjectDeletionModalPropTypes = {
   show: boolean;
@@ -33,4 +33,4 @@ const ProjectDeletionModal = ({ show, setShow, onDelete, onCancel, projectName }
   </Modal>
 );
 
-export { ProjectDeletionModal };
+export default ProjectDeletionModal;

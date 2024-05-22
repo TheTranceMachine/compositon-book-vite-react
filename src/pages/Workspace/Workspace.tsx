@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SplitPane, { Pane, SashContent } from "split-pane-react";
 import { Outlet } from "react-router-dom";
+import { useMediaQuery } from "usehooks-ts";
 import { projectStore } from "../../reducers/projectReducer.js";
 import MonacoEditor from "../../components/Editor/Editor.jsx";
 import "./Workspace.scss";
@@ -14,6 +15,8 @@ const Workspace = () => {
   const {
     selectedProject: { projectName },
   } = projectState;
+
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const lockView = () => {
     setSizes(initialSizes);
@@ -29,7 +32,7 @@ const Workspace = () => {
     <div className="w-full h-full">
       <SplitPane
         allowResize={allowResize}
-        split="vertical"
+        split={isMobile ? "horizontal" : "vertical"}
         sizes={sizes}
         onChange={setSizes}
         sashRender={(index, active) => (
@@ -39,7 +42,9 @@ const Workspace = () => {
         )}
       >
         <Pane minSize={200} maxSize={600}>
-          <h4>{projectName}</h4>
+          <div className="flex p-2">
+            <div className="font-medium truncate">{projectName}</div>
+          </div>
         </Pane>
         <Pane minSize={50} className="flex justify-center items-center bg-[#ccc] h-full">
           <MonacoEditor resizePanel={unlockView} />

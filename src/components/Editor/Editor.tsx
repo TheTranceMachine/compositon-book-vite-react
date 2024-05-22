@@ -81,7 +81,6 @@ const MonacoEditor = ({ resizePanel }) => {
     return () => subscription.unsubscribe();
   }, [editorRef.current]);
 
-  // return <div className="editor" ref={monacoEl}></div>;
   return (
     <Editor
       className="editor"
