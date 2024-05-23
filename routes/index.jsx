@@ -10,7 +10,6 @@ import { NewProject } from '../src/pages/Projects/NewProject';
 import { Projects } from '../src/pages/Projects/Projects';
 import { Prompt } from '../src/pages/Prompt/Prompt';
 import { CustomAlert } from '../src/components/Alert/CustomAlert.jsx';
-import { NewCharacter } from '../src/NewCharacter.jsx';
 import { NewWorld } from '../src/NewWorld.jsx';
 
 const ProjectsPage = asPage(Projects);
@@ -48,10 +47,6 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
     children: [
-      {
-        path: 'create/character',
-        element: <NewCharacter />,
-      },
       {
         path: 'create/world',
         element: <NewWorld />,

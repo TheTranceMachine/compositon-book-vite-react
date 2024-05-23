@@ -5,7 +5,7 @@ import { editorStore, storeCurrentSelection } from "../../reducers/editorReducer
 import { useToast } from "../../hooks/useToast";
 import "./Editor.scss";
 
-const MonacoEditor = ({ resizePanel }) => {
+const MonacoEditor = ({ resizePanel, openCharactersPane }) => {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const toast = useToast();
@@ -22,7 +22,8 @@ const MonacoEditor = ({ resizePanel }) => {
       run: () => {
         const currentSelection = editor.getModel().getValueInRange(editor.getSelection());
         console.log(currentSelection);
-        navigate("create/character");
+        openCharactersPane();
+        // navigate("create/character");
       },
     });
 
@@ -85,7 +86,7 @@ const MonacoEditor = ({ resizePanel }) => {
     <Editor
       className="editor"
       defaultLanguage="plaintext"
-      theme="vs-dark"
+      theme="light"
       defaultValue="Welcome! Please replace this text with your own."
       value="Welcome! Please replace this text with your own."
       options={{

@@ -8,7 +8,7 @@ import { CustomAlert } from "../../components/Alert/CustomAlert.jsx";
 import { useAuth } from "../../hooks/useAuth";
 import { db } from "../../../config/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
-import { Container, Row, Col, Form, InputGroup, Button } from "react-bootstrap";
+import { Form, InputGroup, Button } from "react-bootstrap";
 import { ImageGenerator } from "../../components/ImageGenerator/ImageGenerator";
 import "./Projects.scss";
 
