@@ -4,13 +4,6 @@
   justify-content: center;
   transition: all 1s;
 
-  .line {
-    display: block;
-    height: 100%;
-    width: 1px;
-    background-color: rgba(224, 11, 11, 0.966);
-  }
-
   &.active {
     background-color: rgb(255, 0, 0);
   }

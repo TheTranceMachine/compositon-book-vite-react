@@ -5,7 +5,7 @@ import { editorStore, storeCurrentSelection } from "../../reducers/editorReducer
 import { useToast } from "../../hooks/useToast";
 import "./Editor.scss";
 
-const MonacoEditor = ({ resizePanel, openCharactersPane }) => {
+const MonacoEditor = ({ resizePanel, newCharacter, openCharactersPane }) => {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const toast = useToast();
@@ -21,9 +21,7 @@ const MonacoEditor = ({ resizePanel, openCharactersPane }) => {
       contextMenuOrder: 1,
       run: () => {
         const currentSelection = editor.getModel().getValueInRange(editor.getSelection());
-        console.log(currentSelection);
-        openCharactersPane();
-        // navigate("create/character");
+        newCharacter(currentSelection);
       },
     });
 
@@ -60,6 +58,19 @@ const MonacoEditor = ({ resizePanel, openCharactersPane }) => {
         } else {
           alert('Please select text to enhance and then click "Enhance with AI"');
         }
+      },
+    });
+
+    editor.addAction({
+      id: "view-characters",
+      label: "View Characters",
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyV],
+      precondition: null,
+      keybindingContext: null,
+      contextMenuGroupId: "navigation",
+      contextMenuOrder: 4,
+      run: () => {
+        openCharactersPane();
       },
     });
 

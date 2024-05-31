@@ -23,3 +23,8 @@ export type ProjectStoreTypes = {
   projects: Array<Project>;
   selectedProject: object;
 };
+
+export type NewCharacter = {
+  name: string;
+  description: string;
+};
