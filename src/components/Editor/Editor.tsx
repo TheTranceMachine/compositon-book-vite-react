@@ -5,7 +5,7 @@ import { editorStore, storeCurrentSelection } from "../../reducers/editorReducer
 import { useToast } from "../../hooks/useToast";
 import "./Editor.scss";
 
-const MonacoEditor = ({ resizePanel, newCharacter, openCharactersPane }) => {
+const MonacoEditor = ({ resizePanel, newCharacter, newSetting, openCharactersPane, openStorySettingsPane }) => {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const toast = useToast();
@@ -26,17 +26,16 @@ const MonacoEditor = ({ resizePanel, newCharacter, openCharactersPane }) => {
     });
 
     editor.addAction({
-      id: "create-new-world",
-      label: "Create New World",
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyW],
+      id: "create-new-setting",
+      label: "Create New Story Setting",
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
       precondition: null,
       keybindingContext: null,
       contextMenuGroupId: "navigation",
       contextMenuOrder: 2,
       run: () => {
         const currentSelection = editor.getModel().getValueInRange(editor.getSelection());
-        console.log(currentSelection);
-        navigate("create/world");
+        newSetting(currentSelection);
       },
     });
 
@@ -71,6 +70,19 @@ const MonacoEditor = ({ resizePanel, newCharacter, openCharactersPane }) => {
       contextMenuOrder: 4,
       run: () => {
         openCharactersPane();
+      },
+    });
+
+    editor.addAction({
+      id: "view-settings",
+      label: "View Story Settings",
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyD],
+      precondition: null,
+      keybindingContext: null,
+      contextMenuGroupId: "navigation",
+      contextMenuOrder: 5,
+      run: () => {
+        openStorySettingsPane();
       },
     });
 

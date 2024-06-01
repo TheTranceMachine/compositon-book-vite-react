@@ -1,50 +1,50 @@
 import { useEffect, useState } from "react";
 import { ButtonGroup, Button, Modal, Form, InputGroup } from "react-bootstrap";
-import { BsFileEarmarkPersonFill } from "react-icons/bs";
-import { NewCharacter } from "../../../types/types";
+import { BsImageFill } from "react-icons/bs";
+import { NewSetting } from "../../../types/types";
 
-type NewCharacterModalPropTypes = {
+type NewSettingModalPropTypes = {
   show: boolean;
   setShow: () => void;
-  onSave: (val: NewCharacter) => void;
-  newCharacterName: string;
+  onSave: (val: NewSetting) => void;
+  newSettingTitle: string;
 };
 
-const NewCharacterModal = ({ show, setShow, onSave, newCharacterName }: NewCharacterModalPropTypes) => {
-  const [newCharacter, setNewCharacter] = useState({
-    name: "",
+const NewSettingModal = ({ show, setShow, onSave, newSettingTitle }: NewSettingModalPropTypes) => {
+  const [newSetting, setNewSetting] = useState({
+    title: "",
     description: "",
   });
 
   useEffect(() => {
-    if (newCharacterName !== "") {
-      setNewCharacter({ name: newCharacterName, description: "" });
+    if (newSettingTitle !== "") {
+      setNewSetting({ title: newSettingTitle, description: "" });
     } else {
-      setNewCharacter({ name: "", description: "" });
+      setNewSetting({ title: "", description: "" });
     }
-  }, [show, newCharacterName]);
+  }, [show, newSettingTitle]);
 
   return (
     <Modal show={show} onHide={setShow} centered>
       <Modal.Header closeButton className="bg-amber-300 rounded-t-md border-b border-amber-400">
         <Modal.Title className="flex gap-2 items-center">
-          <BsFileEarmarkPersonFill />
-          New Character
+          <BsImageFill />
+          New Story Setting
         </Modal.Title>
       </Modal.Header>
 
       <Modal.Body className="bg-amber-300 border-t border-t-amber-200 border-b border-b-amber-400 p-3">
         <InputGroup className="mb-3">
-          <InputGroup.Text id="character-name" className="bg-amber-300 border-1 border-amber-500">
-            Name
+          <InputGroup.Text id="setting-title" className="bg-amber-300 border-1 border-amber-500">
+            Title
           </InputGroup.Text>
           <Form.Control
-            placeholder="Name"
-            aria-label="Name"
-            aria-describedby="character-name"
+            placeholder="Title"
+            aria-label="Title"
+            aria-describedby="setting-title"
             className="border-1 border-amber-500"
-            value={newCharacter.name}
-            onChange={(e) => setNewCharacter({ ...newCharacter, name: e.target.value })}
+            value={newSetting.title}
+            onChange={(e) => setNewSetting({ ...newSetting, title: e.target.value })}
           />
         </InputGroup>
 
@@ -54,14 +54,14 @@ const NewCharacterModal = ({ show, setShow, onSave, newCharacterName }: NewChara
             as="textarea"
             aria-label="Description"
             className="border-1 border-amber-500"
-            onChange={(e) => setNewCharacter({ ...newCharacter, description: e.target.value })}
+            onChange={(e) => setNewSetting({ ...newSetting, description: e.target.value })}
           />
         </InputGroup>
       </Modal.Body>
 
       <Modal.Footer className="bg-amber-300 p-3 border-t border-t-amber-200">
         <ButtonGroup aria-label="Modal buttons" className="w-100">
-          <Button variant="dark" onClick={() => onSave(newCharacter)} className="border-r border-2 border-r-slate-800">
+          <Button variant="dark" onClick={() => onSave(newSetting)} className="border-r border-2 border-r-slate-800">
             Save
           </Button>
           <Button variant="dark" onClick={setShow} className="border-l border-l-slate-600">
@@ -72,4 +72,4 @@ const NewCharacterModal = ({ show, setShow, onSave, newCharacterName }: NewChara
     </Modal>
   );
 };
-export default NewCharacterModal;
+export default NewSettingModal;

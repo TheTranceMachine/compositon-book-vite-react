@@ -28,3 +28,8 @@ export type NewCharacter = {
   name: string;
   description: string;
 };
+
+export type NewSetting = {
+  title: string;
+  description: string;
+};
