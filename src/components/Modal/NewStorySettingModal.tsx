@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { ButtonGroup, Button, Modal, Form, InputGroup } from "react-bootstrap";
 import { BsImageFill } from "react-icons/bs";
-import { NewSetting } from "../../../types/types";
+import { NewStorySetting } from "../../../types/types";
 
-type NewSettingModalPropTypes = {
+type NewStorySettingModalPropTypes = {
   show: boolean;
   setShow: () => void;
-  onSave: (val: NewSetting) => void;
+  onSave: (val: NewStorySetting) => void;
   newSettingTitle: string;
 };
 
-const NewSettingModal = ({ show, setShow, onSave, newSettingTitle }: NewSettingModalPropTypes) => {
+const NewStorySettingModal = ({ show, setShow, onSave, newSettingTitle }: NewStorySettingModalPropTypes) => {
   const [newSetting, setNewSetting] = useState({
     title: "",
     description: "",
@@ -72,4 +72,4 @@ const NewSettingModal = ({ show, setShow, onSave, newSettingTitle }: NewSettingM
     </Modal>
   );
 };
-export default NewSettingModal;
+export default NewStorySettingModal;

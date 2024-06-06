@@ -3,17 +3,28 @@ import SplitPane, { Pane, SashContent } from "split-pane-react";
 import { Outlet } from "react-router-dom";
 import { useMediaQuery } from "usehooks-ts";
 import { projectStore } from "../../reducers/projectReducer.js";
-import { storeSelectedCharacter, characterStore, storeCharacters } from "../../reducers/characterReducer.js";
-import { storeSelectedSetting, settingsStore, storeSettings } from "../../reducers/settingReducer.js";
+import {
+  storeSelectedCharacter,
+  characterStore,
+  storeCharacters,
+  deleteCharacter,
+} from "../../reducers/characterReducer.js";
+import {
+  storeSelectedStorySetting,
+  storySettingsStore,
+  storeStorySettings,
+  deleteStorySetting,
+} from "../../reducers/storySettingReducer.js";
 import MonacoEditor from "../../components/Editor/Editor.jsx";
 import Characters from "../../components/Characters/Characters.jsx";
 import StorySettings from "../../components/StorySettings/StorySettings.jsx";
 import "./Workspace.scss";
-import { NewCharacter, NewSetting } from "../../../types/types.js";
+import { NewCharacter, NewStorySetting, DeletionItemType } from "../../../types/types.js";
 import { useToast } from "../../hooks/useToast";
 
 const NewCharacterModal = lazy(() => import("../../components/Modal/NewCharacterModal"));
-const NewSettingModal = lazy(() => import("../../components/Modal/NewSettingModal"));
+const NewStorySettingModal = lazy(() => import("../../components/Modal/NewStorySettingModal"));
+const DeletionConfirmationModal = lazy(() => import("../../components/Modal/DeletionConfirmationModal"));
 
 const initialSizes = [200, 2, 2, "auto", 2];
 
@@ -21,9 +32,15 @@ const Workspace = () => {
   const [sizes, setSizes] = useState(initialSizes);
   const [allowResize, setAllowResize] = useState(false);
   const [newCharacterName, setNewCharacterName] = useState("");
-  const [newSettingTitle, setNewSettingTitle] = useState("");
+  const [newStorySettingTitle, setNewStorySettingTitle] = useState("");
   const [newCharacterModal, setNewCharacterModal] = useState(false);
-  const [newSettingModal, setNewSettingModal] = useState(false);
+  const [newStorySettingModal, setNewStorySettingModal] = useState(false);
+  const [deletionConfirmationModal, setDeletionConfirmationModal] = useState(false);
+  const [deletionItem, setDeletionItem] = useState({
+    id: 0,
+    title: "",
+    type: "",
+  });
   const projectState = projectStore.getState();
   const {
     selectedProject: { projectName },
@@ -48,8 +65,8 @@ const Workspace = () => {
   };
 
   const handleNewSetting = (title: string) => {
-    setNewSettingTitle(title);
-    setNewSettingModal(true);
+    setNewStorySettingTitle(title);
+    setNewStorySettingModal(true);
   };
 
   const handleNewCharacterSave = (character: NewCharacter) => {
@@ -60,12 +77,29 @@ const Workspace = () => {
     toast.success("New character created successfully");
   };
 
-  const handleNewSettingSave = (setting: NewSetting) => {
+  const handleNewStorySettingSave = (storySetting: NewStorySetting) => {
     const id = Math.random().toString(16).slice(2);
-    settingsStore.dispatch(storeSelectedSetting({ selectedSetting: { ...setting, id } }));
-    settingsStore.dispatch(storeSettings({ setting: { ...setting, id } }));
-    setNewSettingModal(false);
+    storySettingsStore.dispatch(storeSelectedStorySetting({ selectedStorySetting: { ...storySetting, id } }));
+    storySettingsStore.dispatch(storeStorySettings({ storySetting: { ...storySetting, id } }));
+    setNewStorySettingModal(false);
     toast.success("New story setting created successfully");
+  };
+
+  const handleDeletionRequest = (deletionItem: DeletionItemType) => {
+    setDeletionItem(deletionItem);
+    setDeletionConfirmationModal(true);
+  };
+
+  const handleDeleteItem = (id: number, type: string) => {
+    if (type === "story setting") {
+      storySettingsStore.dispatch(storeSelectedStorySetting({ selectedStorySetting: {} }));
+      storySettingsStore.dispatch(deleteStorySetting(id));
+    } else {
+      characterStore.dispatch(storeSelectedCharacter({ selectedCharacter: {} }));
+      characterStore.dispatch(deleteCharacter(id));
+    }
+    setDeletionConfirmationModal(false);
+    toast.success(`${type} deleted successfully`);
   };
 
   return (
@@ -87,10 +121,20 @@ const Workspace = () => {
           </div>
         </Pane>
         <Pane minSize={50} maxSize={600}>
-          <Characters closeCharactersPane={() => setSizes([200, 2, 2, "auto", 2])} />
+          <Characters
+            closeCharactersPane={() => setSizes([200, 2, 2, "auto", 2])}
+            deleteCharacter={(id: number, name: string) =>
+              handleDeletionRequest({ id, title: name, type: "character" })
+            }
+          />
         </Pane>
         <Pane minSize={50} maxSize={600}>
-          <StorySettings closeStorySettingsPane={() => setSizes([200, 2, 2, "auto", 2])} />
+          <StorySettings
+            closeStorySettingsPane={() => setSizes([200, 2, 2, "auto", 2])}
+            deleteStorySetting={(id: number, title: string) =>
+              handleDeletionRequest({ id, title, type: "story setting" })
+            }
+          />
         </Pane>
         <Pane minSize={50} className="px-32 py-3 bg-white">
           <div className="shadow-md shadow-slate-300 border-1 border-slate-300 border-t-slate-200 h-full">
@@ -120,11 +164,20 @@ const Workspace = () => {
         />
       </Suspense>
       <Suspense>
-        <NewSettingModal
-          show={newSettingModal}
-          setShow={() => setNewSettingModal(false)}
-          onSave={(val) => handleNewSettingSave(val)}
-          newSettingTitle={newSettingTitle}
+        <NewStorySettingModal
+          show={newStorySettingModal}
+          setShow={() => setNewStorySettingModal(false)}
+          onSave={(storySetting: NewStorySetting) => handleNewStorySettingSave(storySetting)}
+          newSettingTitle={newStorySettingTitle}
+        />
+      </Suspense>
+      <Suspense>
+        <DeletionConfirmationModal
+          show={deletionConfirmationModal}
+          setShow={() => setDeletionConfirmationModal(false)}
+          onDelete={() => handleDeleteItem(deletionItem.id, deletionItem.type)}
+          item={deletionItem.title}
+          type={deletionItem.type}
         />
       </Suspense>
     </div>

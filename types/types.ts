@@ -29,7 +29,13 @@ export type NewCharacter = {
   description: string;
 };
 
-export type NewSetting = {
+export type NewStorySetting = {
   title: string;
   description: string;
 };
+
+export type DeletionItemType = {
+  id: number,
+  title: string;
+  type: string;
+}

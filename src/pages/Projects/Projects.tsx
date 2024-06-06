@@ -15,7 +15,7 @@ import {
 import CustomCard from "../../components/CustomCard/CustomCard";
 import "./Projects.scss";
 
-const ProjectDeletionModal = lazy(() => import("../../components/Modal/ProjectDeletionModal"));
+const DeletionConfirmationModal = lazy(() => import("../../components/Modal/DeletionConfirmationModal"));
 
 const Projects = () => {
   const [loading, setLoading] = useState(true);
@@ -118,12 +118,12 @@ const Projects = () => {
               : null}
           </div>
           <Suspense>
-            <ProjectDeletionModal
+            <DeletionConfirmationModal
               show={projectModal.show}
               setShow={() => setProjectModal(modalInitialProps)}
               onDelete={deleteProject}
-              onCancel={() => setProjectModal(modalInitialProps)}
-              projectName={projectModal.projectName}
+              item={projectModal.projectName}
+              type="project"
             />
           </Suspense>
         </>
