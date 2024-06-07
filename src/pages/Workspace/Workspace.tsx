@@ -140,7 +140,7 @@ const Workspace = () => {
             }
           />
         </Pane>
-        <Pane minSize={50} className="px-32 py-3 bg-white">
+        <Pane minSize={50} className="px-32 py-3">
           <MonacoEditor
             resizePanel={unlockView}
             newCharacter={(val: string) => handleNewCharacter(val)}

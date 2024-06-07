@@ -1,12 +1,43 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { editorStore, storeCurrentSelection } from "../../reducers/editorReducer";
+import { characterStore } from "../../reducers/characterReducer";
 import { useToast } from "../../hooks/useToast";
 import "./Editor.scss";
 
 const MonacoEditor = ({ resizePanel, newCharacter, newSetting, openCharactersPane, openStorySettingsPane }) => {
   const editorRef = useRef(null);
+  const monacoRef = useRef(null);
+  const [decorations, setDecorations] = useState([]);
+
+  // TODO: Replace with character names and story setting names
+  useEffect(() => {
+    if (!editorRef.current || !monacoRef.current) return;
+    const subscription = characterStore.subscribe(() => {
+      const characters = characterStore.getState().characters;
+      console.log(characters);
+      const model = editorRef.current.getModel();
+      const newDecorations = [];
+
+      characters.forEach(({ name }) => {
+        const matches = model.findMatches(name, true, true, false, null, true);
+        matches.forEach((match) => {
+          newDecorations.push({
+            range: match.range,
+            options: {
+              inlineClassName: "character-decoration",
+            },
+          });
+        });
+      });
+
+      setDecorations((currentDecorations) => editorRef.current.deltaDecorations(currentDecorations, newDecorations));
+    });
+
+    return () => subscription.unsubscribe();
+  }, [monacoRef.current]);
+
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -87,6 +118,7 @@ const MonacoEditor = ({ resizePanel, newCharacter, newSetting, openCharactersPan
     });
 
     editorRef.current = editor;
+    monacoRef.current = monaco;
   };
 
   // TODO: test if this works - it's about enhancing the text when changes appear
@@ -106,20 +138,22 @@ const MonacoEditor = ({ resizePanel, newCharacter, newSetting, openCharactersPan
   }, [editorRef.current]);
 
   return (
-    <Editor
-      className="editor"
-      defaultLanguage="plaintext"
-      theme="light"
-      defaultValue="Welcome! Please replace this text with your own."
-      value="Welcome! Please replace this text with your own."
-      options={{
-        automaticLayout: true,
-        minimap: { enabled: false },
-        contextmenu: true,
-        wordWrap: "on",
-      }}
-      onMount={handleEditorDidMount}
-    />
+    <div className="shadow-lg shadow-slate-200">
+      <Editor
+        className="editor border"
+        defaultLanguage="plaintext"
+        theme="light"
+        defaultValue="Welcome! Please replace this text with your own."
+        value="Welcome! Please replace this text with your own."
+        options={{
+          automaticLayout: true,
+          minimap: { enabled: false },
+          contextmenu: true,
+          wordWrap: "on",
+        }}
+        onMount={handleEditorDidMount}
+      />
+    </div>
   );
 };
 
