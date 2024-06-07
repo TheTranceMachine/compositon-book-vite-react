@@ -15,7 +15,7 @@ const StorySettings = ({ closeStorySettingsPane, deleteStorySetting }) => {
         <div className="bg-amber-300 rounded-md border-1 border-amber-400 shadow-md shadow-slate-400 mt-3" key={id}>
           <div className="flex gap-2 items-center p-2 border-b border-amber-400">
             <BsImageFill />
-            <div className="font-medium">{title}</div>
+            <div className="font-medium truncate">{title}</div>
           </div>
           <div className="p-2 border-t border-t-amber-200 border-b border-amber-400">
             <div className="text-xs text-gray-500">{description}</div>

@@ -54,6 +54,10 @@ const Workspace = () => {
     setAllowResize(false);
   };
 
+  const closePane = () => {
+    setSizes(initialSizes);
+  };
+
   const unlockView = () => {
     setSizes([200, 2, 2, "auto", 600]);
     setAllowResize(true);
@@ -137,22 +141,20 @@ const Workspace = () => {
           />
         </Pane>
         <Pane minSize={50} className="px-32 py-3 bg-white">
-          <div className="shadow-md shadow-slate-300 border-1 border-slate-300 border-t-slate-200 h-full">
-            <MonacoEditor
-              resizePanel={unlockView}
-              newCharacter={(val: string) => handleNewCharacter(val)}
-              newSetting={(val: string) => handleNewSetting(val)}
-              openCharactersPane={() => setSizes([50, 600, 2, "auto", 2])}
-              openStorySettingsPane={() => setSizes([50, 2, 600, "auto", 2])}
-            />
-          </div>
+          <MonacoEditor
+            resizePanel={unlockView}
+            newCharacter={(val: string) => handleNewCharacter(val)}
+            newSetting={(val: string) => handleNewSetting(val)}
+            openCharactersPane={() => setSizes([50, 600, 2, "auto", 2])}
+            openStorySettingsPane={() => setSizes([50, 2, 600, "auto", 2])}
+          />
         </Pane>
         <Pane
           minSize={50}
           maxSize={600}
           className="flex flex-col flex-wrap justify-start items-center gap-y-3 h-full bg-[rgb(238, 238, 238)]"
         >
-          <Outlet context={[lockView]} />
+          <Outlet context={[lockView, closePane]} />
         </Pane>
       </SplitPane>
       <Suspense>

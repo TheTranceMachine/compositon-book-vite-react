@@ -8,6 +8,7 @@ import { editorStore, storeEnhancedSelection } from "../../reducers/editorReduce
 import { useToast } from "../../hooks/useToast";
 import { promptAction } from "../../actions/chatGptActions";
 import { PromptDropdown } from "../../components/PromptDropdown/PromptDropdown";
+import { IoCloseCircleSharp } from "react-icons/io5";
 
 export const Prompt = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export const Prompt = () => {
 
   console.log("currentSelection", currentSelection);
 
-  const [lockView]: FunctionArrayType = useOutletContext();
+  const [lockView, closePane]: FunctionArrayType = useOutletContext();
   const [enhancedText, setEnhancedText] = useState();
   // const monacoEl = useRef();
   const toast = useToast();
@@ -89,24 +90,29 @@ export const Prompt = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 p-3 w-full">
+    <div className="flex flex-col gap-2 p-3 w-full bg-white">
+      <div className="flex justify-between items-center mb-3">
+        <div className="font-medium truncate">Enhance text with AI</div>
+        <IoCloseCircleSharp onClick={() => closePane()} className="cursor-pointer" />
+      </div>
       <PromptDropdown onChange={(selection: Object) => sendPrompt(selection)} />
       {currentSelection && (
-        <Editor
-          className="border-2 border-slate-950 rounded-md"
-          height="50vh"
-          value={enhancedText ? enhancedText : currentSelection}
-          options={{
-            automaticLayout: true,
-            language: "plaintext",
-            theme: "vs-dark",
-            minimap: { enabled: false },
-            contextmenu: false,
-            lineNumbers: "off",
-            readOnly: true,
-          }}
-          onMount={(editor) => setEditor(editor)}
-        />
+        <div className="shadow-md shadow-slate-300 border-1 border-slate-300 border-t-slate-200 h-full rounded-md">
+          <Editor
+            className="border-2 border-white rounded-md"
+            height="50vh"
+            value={enhancedText ? enhancedText : currentSelection}
+            options={{
+              automaticLayout: true,
+              language: "plaintext",
+              theme: "light",
+              minimap: { enabled: false },
+              contextmenu: false,
+              lineNumbers: "off",
+              readOnly: true,
+            }}
+          />
+        </div>
       )}
       {enhancedText && (
         <Button variant="dark" size="md" onClick={storeEnhancedText}>

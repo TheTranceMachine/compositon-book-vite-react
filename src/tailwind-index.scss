@@ -578,8 +578,16 @@ video {
   margin-top: 1rem;
 }
 
+.inline {
+  display: inline;
+}
+
 .flex {
   display: flex;
+}
+
+.contents {
+  display: contents;
 }
 
 .h-\[100vh\] {
@@ -718,9 +726,9 @@ video {
   border-color: rgb(203 213 225 / var(--tw-border-opacity));
 }
 
-.border-slate-950 {
+.border-white {
   --tw-border-opacity: 1;
-  border-color: rgb(2 6 23 / var(--tw-border-opacity));
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
 .border-b-amber-400 {
@@ -814,6 +822,10 @@ video {
 .py-3 {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+}
+
+.pt-3 {
+  padding-top: 0.75rem;
 }
 
 .text-xs {

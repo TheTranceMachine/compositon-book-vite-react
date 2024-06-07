@@ -11,7 +11,7 @@ type DeletionConfirmationModalPropTypes = {
 const DeletionConfirmationModal = ({ show, setShow, onDelete, item, type }: DeletionConfirmationModalPropTypes) => (
   <Modal show={show} onHide={setShow} centered>
     <Modal.Header closeButton className="bg-red-400 rounded-t-md border-b border-red-500">
-      <Modal.Title>You're deleting {type}</Modal.Title>
+      <Modal.Title>You're deleting a {type}</Modal.Title>
     </Modal.Header>
 
     <Modal.Body className="bg-red-400 border-t border-t-red-300 border-b border-b-red-500 p-3">
