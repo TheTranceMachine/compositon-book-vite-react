@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { editorStore, storeCurrentSelection } from "../../reducers/editorReducer";
 import { characterStore } from "../../reducers/characterReducer";
+import { storySettingsStore } from "../../reducers/storySettingReducer";
 import { useToast } from "../../hooks/useToast";
 import "./Editor.scss";
 
@@ -16,14 +17,14 @@ const MonacoEditor = ({ resizePanel, newCharacter, newSetting, openCharactersPan
     if (!editorRef.current || !monacoRef.current) return;
     const subscription = characterStore.subscribe(() => {
       const characters = characterStore.getState().characters;
-      console.log(characters);
+
       const model = editorRef.current.getModel();
-      const newDecorations = [];
+      const newCharacterDecorations = [];
 
       characters.forEach(({ name }) => {
         const matches = model.findMatches(name, true, true, false, null, true);
         matches.forEach((match) => {
-          newDecorations.push({
+          newCharacterDecorations.push({
             range: match.range,
             options: {
               inlineClassName: "character-decoration",
@@ -32,7 +33,37 @@ const MonacoEditor = ({ resizePanel, newCharacter, newSetting, openCharactersPan
         });
       });
 
-      setDecorations((currentDecorations) => editorRef.current.deltaDecorations(currentDecorations, newDecorations));
+      setDecorations((currentDecorations) =>
+        editorRef.current.deltaDecorations(currentDecorations, newCharacterDecorations)
+      );
+    });
+
+    return () => subscription.unsubscribe();
+  }, [monacoRef.current]);
+
+  useEffect(() => {
+    if (!editorRef.current || !monacoRef.current) return;
+    const subscription = storySettingsStore.subscribe(() => {
+      const storySettings = storySettingsStore.getState().storySettings;
+
+      const model = editorRef.current.getModel();
+      const newStorySettingDecorations = [];
+
+      storySettings.forEach(({ title }) => {
+        const matches = model.findMatches(title, true, true, false, null, true);
+        matches.forEach((match) => {
+          newStorySettingDecorations.push({
+            range: match.range,
+            options: {
+              inlineClassName: "story-setting-decoration",
+            },
+          });
+        });
+      });
+
+      setDecorations((currentDecorations) =>
+        editorRef.current.deltaDecorations(currentDecorations, newStorySettingDecorations)
+      );
     });
 
     return () => subscription.unsubscribe();
@@ -138,7 +169,7 @@ const MonacoEditor = ({ resizePanel, newCharacter, newSetting, openCharactersPan
   }, [editorRef.current]);
 
   return (
-    <div className="shadow-lg shadow-slate-200">
+    <div className="shadow-lg shadow-slate-200 h-full">
       <Editor
         className="editor border"
         defaultLanguage="plaintext"
