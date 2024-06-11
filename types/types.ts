@@ -1,3 +1,5 @@
+import * as monaco from "monaco-editor";
+
 export type FunctionArrayType = Function[];
 
 export type Project = {
@@ -39,3 +41,24 @@ export type DeletionItemType = {
   title: string;
   type: string;
 }
+
+export type showPopupTypes = {
+  position: monaco.Position
+  title: string
+  description: string
+  type: string
+};
+
+export type PopupContentTypes = {
+  title: string
+  description: string
+  type: string
+};
+
+export type MonacoEditorTypes = {
+  resizePanel: () => void
+  newCharacter: (name: string) => void
+  newSetting: (title: string) => void
+  openCharactersPane: () => void
+  openStorySettingsPane: () => void
+};

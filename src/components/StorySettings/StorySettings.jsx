@@ -1,10 +1,12 @@
+import { useAtomState } from "@zedux/react";
 import { Button } from "react-bootstrap";
 import { IoCloseCircleSharp } from "react-icons/io5";
 import { BsImageFill } from "react-icons/bs";
-import { storySettingsStore } from "../../reducers/storySettingReducer";
+import { projectStoreAtom } from "../../reducers/projectStore";
 
 const StorySettings = ({ closeStorySettingsPane, deleteStorySetting }) => {
-  const { storySettings } = storySettingsStore.getState();
+  const [projectState] = useAtomState(projectStoreAtom);
+  const { storySettings } = projectState;
   return (
     <div className="py-2 px-3 h-full bg-white">
       <div className="flex justify-between items-center mb-3">

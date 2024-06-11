@@ -1,10 +1,13 @@
+import { useAtomState } from "@zedux/react";
 import { Button } from "react-bootstrap";
 import { IoCloseCircleSharp } from "react-icons/io5";
 import { BsFileEarmarkPersonFill } from "react-icons/bs";
-import { characterStore } from "../../reducers/characterReducer";
+import { projectStoreAtom } from "../../reducers/projectStore";
 
 const Characters = ({ closeCharactersPane, deleteCharacter }) => {
-  const { characters } = characterStore.getState();
+  const [projectState] = useAtomState(projectStoreAtom);
+  const { characters } = projectState;
+
   return (
     <div className="py-2 px-3 h-full bg-white">
       <div className="flex justify-between items-center mb-3">

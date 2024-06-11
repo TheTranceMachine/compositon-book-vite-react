@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAtomState } from "@zedux/react";
 import { IoDocumentsOutline, IoBulbOutline } from "react-icons/io5";
 import { CustomSpinner } from "../../components/Spinner/CustomSpinner";
-import { projectStore, storeSelectedProject } from "../../reducers/projectReducer.js";
+import { projectStoreAtom } from "../../reducers/projectStore";
 import { useToast } from "../../hooks/useToast.jsx";
 import { CustomAlert } from "../../components/Alert/CustomAlert.jsx";
 import { useAuth } from "../../hooks/useAuth";
@@ -13,6 +14,7 @@ import { ImageGenerator } from "../../components/ImageGenerator/ImageGenerator";
 import "./Projects.scss";
 
 const NewProject = () => {
+  const [projectState, setProjectState] = useAtomState(projectStoreAtom);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showAlert, setShowAlert] = useState(true);
@@ -51,9 +53,11 @@ const NewProject = () => {
         const date: Date = new Date();
         const projectCreationTimestamp = date.toLocaleString("en-EN", { timeZone: "UTC" });
 
-        projectStore.dispatch(
-          storeSelectedProject({ projectId, projectCreationTimestamp, projectName, projectDescription })
-        );
+        setProjectState({
+          ...projectState,
+          selectedProject: { projectId, projectCreationTimestamp, projectName, projectDescription },
+        });
+
         setNextButton(true);
         toast.success("Your project was created successfully!");
       } catch (e) {

@@ -2,19 +2,8 @@ import { Suspense, lazy, useState } from "react";
 import SplitPane, { Pane, SashContent } from "split-pane-react";
 import { Outlet } from "react-router-dom";
 import { useMediaQuery } from "usehooks-ts";
-import { projectStore } from "../../reducers/projectReducer.js";
-import {
-  storeSelectedCharacter,
-  characterStore,
-  storeCharacters,
-  deleteCharacter,
-} from "../../reducers/characterReducer.js";
-import {
-  storeSelectedStorySetting,
-  storySettingsStore,
-  storeStorySettings,
-  deleteStorySetting,
-} from "../../reducers/storySettingReducer.js";
+import { useAtomState } from "@zedux/react";
+import { projectStoreAtom } from "../../reducers/projectStore";
 import MonacoEditor from "../../components/Editor/Editor.jsx";
 import Characters from "../../components/Characters/Characters.jsx";
 import StorySettings from "../../components/StorySettings/StorySettings.jsx";
@@ -29,6 +18,8 @@ const DeletionConfirmationModal = lazy(() => import("../../components/Modal/Dele
 const initialSizes = [200, 2, 2, "auto", 2];
 
 const Workspace = () => {
+  // TODO: Think where to use separate atoms for characters and story settings
+  const [projectState, setProjectState] = useAtomState(projectStoreAtom);
   const [sizes, setSizes] = useState(initialSizes);
   const [allowResize, setAllowResize] = useState(false);
   const [newCharacterName, setNewCharacterName] = useState("");
@@ -41,7 +32,7 @@ const Workspace = () => {
     title: "",
     type: "",
   });
-  const projectState = projectStore.getState();
+
   const {
     selectedProject: { projectName },
   } = projectState;
@@ -75,16 +66,22 @@ const Workspace = () => {
 
   const handleNewCharacterSave = (character: NewCharacter) => {
     const id = Math.random().toString(16).slice(2);
-    characterStore.dispatch(storeSelectedCharacter({ selectedCharacter: { ...character, id } }));
-    characterStore.dispatch(storeCharacters({ character: { ...character, id } }));
+    setProjectState({
+      ...projectState,
+      characters: [...projectState.characters, { ...character, id }],
+      selectedCharacter: { ...character, id },
+    });
     setNewCharacterModal(false);
     toast.success("New character created successfully");
   };
 
   const handleNewStorySettingSave = (storySetting: NewStorySetting) => {
     const id = Math.random().toString(16).slice(2);
-    storySettingsStore.dispatch(storeSelectedStorySetting({ selectedStorySetting: { ...storySetting, id } }));
-    storySettingsStore.dispatch(storeStorySettings({ storySetting: { ...storySetting, id } }));
+    setProjectState({
+      ...projectState,
+      storySettings: [...projectState.storySettings, { ...storySetting, id }],
+      selectedStorySetting: { ...storySetting, id },
+    });
     setNewStorySettingModal(false);
     toast.success("New story setting created successfully");
   };
@@ -96,11 +93,17 @@ const Workspace = () => {
 
   const handleDeleteItem = (id: number, type: string) => {
     if (type === "story setting") {
-      storySettingsStore.dispatch(storeSelectedStorySetting({ selectedStorySetting: {} }));
-      storySettingsStore.dispatch(deleteStorySetting(id));
+      setProjectState({
+        ...projectState,
+        storySettings: projectState.storySettings.filter((setting) => setting.id !== id),
+        selectedStorySetting: {},
+      });
     } else {
-      characterStore.dispatch(storeSelectedCharacter({ selectedCharacter: {} }));
-      characterStore.dispatch(deleteCharacter(id));
+      setProjectState({
+        ...projectState,
+        characters: projectState.characters.filter((character) => character.id !== id),
+        selectedCharacter: {},
+      });
     }
     setDeletionConfirmationModal(false);
     toast.success(`${type} deleted successfully`);

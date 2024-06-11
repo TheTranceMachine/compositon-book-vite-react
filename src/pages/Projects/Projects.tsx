@@ -1,11 +1,12 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+import { useAtomState } from "@zedux/react";
 import { CustomSpinner } from "../../components/Spinner/CustomSpinner";
 import { db } from "../../../config/firebaseConfig";
 import { useAuth } from "../../hooks/useAuth";
 import { useToast } from "../../hooks/useToast";
-import { projectStore, storeSelectedProject, storeAllProjects } from "../../reducers/projectReducer.js";
+import { projectStoreAtom } from "../../reducers/projectStore";
 import {
   Project,
   ModalInitialPropsTypes,
@@ -18,18 +19,16 @@ import "./Projects.scss";
 const DeletionConfirmationModal = lazy(() => import("../../components/Modal/DeletionConfirmationModal"));
 
 const Projects = () => {
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const toast = useToast();
-
-  console.log("TEST");
-
   const { currentUser } = useAuth();
   const { uid } = currentUser;
   const modalInitialProps: ModalInitialPropsTypes = { show: false, projectId: null, projectName: "" };
 
+  const [projectState, setProjectState] = useAtomState(projectStoreAtom);
+  const [loading, setLoading] = useState(true);
   const [projectModal, setProjectModal] = useState(modalInitialProps);
-  const [projects, setProjects] = useState<Array<Project>>([]);
+  const { projects } = projectState;
 
   const fetchProjects = async () => {
     const snapshots = await getDocs(collection(db, `users/${uid}/projects/`));
@@ -52,31 +51,30 @@ const Projects = () => {
 
       projects.push({ projectId, projectCreationTimestamp, projectName, projectDescription });
     });
-    projectStore.dispatch(storeAllProjects(projects));
+    setProjectState({ ...projectState, projects });
   };
 
   useEffect(() => {
     fetchProjects();
   }, []);
 
-  useEffect(() => {
-    const subscription = projectStore.subscribe((state: ProjectStoreTypes) => {
-      setProjects(state.projects);
-    });
-    return () => subscription.unsubscribe();
-  });
-
-  const chooseProject = (props: Project) => {
-    projectStore.dispatch(storeSelectedProject({ ...props }));
+  const chooseProject = (project: Project) => {
+    setProjectState({ ...projectState, selectedProject: { ...project } });
     navigate("/");
   };
 
   const deleteProject = async () => {
     try {
       setLoading(true);
+
       await deleteDoc(doc(db, `users/${uid}/projects/${projectModal.projectId}`));
       setProjectModal(modalInitialProps);
-      fetchProjects();
+
+      const updatedProjects = projects.filter((project: Project) => project.projectId !== projectModal.projectId);
+      setProjectState({ ...projectState, projects: updatedProjects });
+
+      setLoading(false);
+
       toast.success(`Project ${projectModal.projectName} was deleted`);
     } catch (e) {
       toast.error(`Something went wrong while deleting project ${projectModal.projectName}. Please try again.`);
