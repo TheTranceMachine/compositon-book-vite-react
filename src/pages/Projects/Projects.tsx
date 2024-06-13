@@ -99,20 +99,20 @@ const Projects = () => {
             />
             {projects.length
               ? projects.map(({ projectId, projectCreationTimestamp, projectName, projectDescription }: Project) => (
-                  <CustomCard
-                    key={projectId}
-                    title={projectName}
-                    description={projectDescription}
-                    timeStamp={projectCreationTimestamp}
-                    buttonText="Go to project"
-                    onEdit={() =>
-                      chooseProject({ projectId, projectCreationTimestamp, projectName, projectDescription })
-                    }
-                    backgroundColor="light"
-                    textColor="dark"
-                    onDelete={() => setProjectModal({ show: true, projectId, projectName })}
-                  />
-                ))
+                <CustomCard
+                  key={projectId}
+                  title={projectName}
+                  description={projectDescription}
+                  timeStamp={projectCreationTimestamp}
+                  buttonText="Go to project"
+                  onEdit={() =>
+                    chooseProject({ projectId, projectCreationTimestamp, projectName, projectDescription })
+                  }
+                  backgroundColor="light"
+                  textColor="dark"
+                  onDelete={() => setProjectModal({ show: true, projectId, projectName })}
+                />
+              ))
               : null}
           </div>
           <Suspense>

@@ -74,7 +74,6 @@ const MonacoEditor = ({
   const { characters, storySettings } = projectState;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
-  const monacoRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
   const currentWidgetIdRef = useRef<string>("");
 
   const navigate = useNavigate();
@@ -120,76 +119,50 @@ const MonacoEditor = ({
   };
 
   const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    editor.addAction({
-      id: "create-new-character",
-      label: "Create New Character",
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyC],
-      contextMenuGroupId: "navigation",
-      contextMenuOrder: 1,
-      run: () => {
-        const currentSelection = editor.getModel().getValueInRange(editor.getSelection());
-        newCharacter(currentSelection);
-      },
-    });
-
-    editor.addAction({
-      id: "create-new-setting",
-      label: "Create New Story Setting",
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
-      contextMenuGroupId: "navigation",
-      contextMenuOrder: 2,
-      run: () => {
-        const currentSelection = editor.getModel().getValueInRange(editor.getSelection());
-        newSetting(currentSelection);
-      },
-    });
-
-    editor.addAction({
-      id: "ai-enhance",
-      label: "Enhance with AI",
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyE],
-      contextMenuGroupId: "navigation",
-      contextMenuOrder: 3,
-      run: () => {
-        const range = editor.getSelection();
-        const currentSelection = editor.getModel().getValueInRange(range);
-        if (currentSelection) {
-          editorStore.dispatch(storeCurrentSelection({ range, currentSelection }));
-          resizePanel();
-          navigate("enhance");
-        } else {
-          alert('Please select text to enhance and then click "Enhance with AI"');
-        }
-      },
-    });
-
-    editor.addAction({
-      id: "view-characters",
-      label: "View Characters",
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyV],
-      contextMenuGroupId: "navigation",
-      contextMenuOrder: 4,
-      run: () => {
-        openCharactersPane();
-      },
-    });
-
-    editor.addAction({
-      id: "view-settings",
-      label: "View Story Settings",
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyD],
-      contextMenuGroupId: "navigation",
-      contextMenuOrder: 5,
-      run: () => {
-        openStorySettingsPane();
-      },
+    editorActions.forEach((action) => {
+      editor.addAction({
+        id: action.id,
+        label: action.label,
+        keybindings: action.keybindings,
+        contextMenuGroupId: action.contextMenuGroupId,
+        contextMenuOrder: action.contextMenuOrder,
+        run: () => {
+          const range = editor.getSelection();
+          const currentSelection = editor.getModel().getValueInRange(editor.getSelection());
+          switch (action.id) {
+            case "create-new-character":
+              newCharacter(currentSelection);
+              break;
+            case "create-new-setting":
+              newSetting(currentSelection);
+              break;
+            case "ai-enhance":
+              if (currentSelection) {
+                editorStore.dispatch(storeCurrentSelection({ range, currentSelection }));
+                resizePanel();
+                navigate("enhance");
+              } else {
+                alert('Please select text to enhance and then click "Enhance with AI"');
+              }
+              break;
+            case "view-characters":
+              openCharactersPane();
+              break;
+            case "view-settings":
+              openStorySettingsPane();
+              break;
+            default:
+              break;
+          }
+        },
+      });
     });
 
     editorRef.current = editor;
   };
 
   useEffect(() => {
-    if (!editorRef.current || !monacoRef.current) return;
+    if (!editorRef.current) return;
     editorRef.current.onMouseMove((event) => {
       if (!characters.length && !storySettings.length) return;
       const position = event.target.position;
@@ -221,7 +194,7 @@ const MonacoEditor = ({
 
   // Decorate the editor with character and story setting names
   useEffect(() => {
-    if (!editorRef.current || !monacoRef.current) return;
+    if (!editorRef.current) return;
     const model = editorRef.current.getModel();
     const newCharacterDecorations = [];
 
@@ -240,13 +213,12 @@ const MonacoEditor = ({
     setDecorations((currentDecorations) =>
       editorRef.current.deltaDecorations(currentDecorations, newCharacterDecorations)
     );
-  }, [monacoRef.current, characters]);
+  }, [editorRef.current, characters]);
 
   // Decorate the editor with character and story setting names
   // TODO: fix bug when character name is the same as story setting name
-  // TODO: fix bug with disappearing decorations
   useEffect(() => {
-    if (!editorRef.current || !monacoRef.current) return;
+    if (!editorRef.current) return;
     const model = editorRef.current.getModel();
     const newStorySettingDecorations = [];
 
@@ -265,7 +237,7 @@ const MonacoEditor = ({
     setDecorations((currentDecorations) =>
       editorRef.current.deltaDecorations(currentDecorations, newStorySettingDecorations)
     );
-  }, [monacoRef.current, storySettings]);
+  }, [editorRef.current, storySettings]);
 
   // TODO: test if this works - it's about enhancing the text when changes appear
   useEffect(() => {
