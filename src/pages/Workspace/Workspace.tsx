@@ -8,7 +8,7 @@ import MonacoEditor from "../../components/Editor/Editor.jsx";
 import Characters from "../../components/Characters/Characters.jsx";
 import StorySettings from "../../components/StorySettings/StorySettings.jsx";
 import "./Workspace.scss";
-import { NewCharacter, NewStorySetting, DeletionItemType } from "../../../types/types.js";
+import { CharacterTypes, StorySettingTypes, DeletionItemType } from "../../../types/types.js";
 import { useToast } from "../../hooks/useToast";
 
 const NewCharacterModal = lazy(() => import("../../components/Modal/NewCharacterModal"));
@@ -64,7 +64,7 @@ const Workspace = () => {
     setNewStorySettingModal(true);
   };
 
-  const handleNewCharacterSave = (character: NewCharacter) => {
+  const handleNewCharacterSave = (character: CharacterTypes) => {
     const id = Math.random().toString(16).slice(2);
     setProjectState({
       ...projectState,
@@ -75,7 +75,7 @@ const Workspace = () => {
     toast.success("New character created successfully");
   };
 
-  const handleNewStorySettingSave = (storySetting: NewStorySetting) => {
+  const handleNewStorySettingSave = (storySetting: StorySettingTypes) => {
     const id = Math.random().toString(16).slice(2);
     setProjectState({
       ...projectState,
@@ -172,7 +172,7 @@ const Workspace = () => {
         <NewStorySettingModal
           show={newStorySettingModal}
           setShow={() => setNewStorySettingModal(false)}
-          onSave={(storySetting: NewStorySetting) => handleNewStorySettingSave(storySetting)}
+          onSave={(storySetting: StorySettingTypes) => handleNewStorySettingSave(storySetting)}
           newSettingTitle={newStorySettingTitle}
         />
       </Suspense>

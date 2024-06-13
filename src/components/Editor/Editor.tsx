@@ -8,7 +8,16 @@ import { BsFileEarmarkPersonFill, BsImageFill } from "react-icons/bs";
 import { editorStore, storeCurrentSelection } from "../../reducers/editorReducer";
 import { projectStoreAtom } from "../../reducers/projectStore";
 import { useToast } from "../../hooks/useToast";
-import { MonacoEditorTypes, PopupContentTypes, showPopupTypes } from "../../../types/types";
+import editorActions from "./editor-actions";
+import {
+  MonacoEditorTypes,
+  CharacterTypes,
+  NewCharacterDecorationsTypes,
+  NewStorySettingDecorationsTypes,
+  PopupContentTypes,
+  showPopupTypes,
+  StorySettingTypes,
+} from "../../../types/types";
 import "./Editor.scss";
 
 const PopupContent = ({ title, description, type }: PopupContentTypes) => (
@@ -23,45 +32,6 @@ const PopupContent = ({ title, description, type }: PopupContentTypes) => (
   </div>
 );
 
-// TODO: Use these actions in the editor
-const editorActions = [
-  {
-    id: "create-new-character",
-    label: "Create New Character",
-    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyC],
-    contextMenuGroupId: "navigation",
-    contextMenuOrder: 1,
-  },
-  {
-    id: "create-new-setting",
-    label: "Create New Story Setting",
-    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
-    contextMenuGroupId: "navigation",
-    contextMenuOrder: 2,
-  },
-  {
-    id: "ai-enhance",
-    label: "Enhance with AI",
-    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyE],
-    contextMenuGroupId: "navigation",
-    contextMenuOrder: 3,
-  },
-  {
-    id: "view-characters",
-    label: "View Characters",
-    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyV],
-    contextMenuGroupId: "navigation",
-    contextMenuOrder: 4,
-  },
-  {
-    id: "view-settings",
-    label: "View Story Settings",
-    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyD],
-    contextMenuGroupId: "navigation",
-    contextMenuOrder: 5,
-  },
-];
-
 const MonacoEditor = ({
   resizePanel,
   newCharacter,
@@ -69,11 +39,12 @@ const MonacoEditor = ({
   openCharactersPane,
   openStorySettingsPane,
 }: MonacoEditorTypes) => {
+  const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | undefined>(undefined);
   const [projectState, setProjectState] = useAtomState(projectStoreAtom);
-  const [decorations, setDecorations] = useState<monaco.editor.IModelDeltaDecoration[]>([]);
+  const [decorations, setDecorations] = useState<monaco.editor.IEditorDecorationsCollection[]>([]);
   const { characters, storySettings } = projectState;
 
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
+  // const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
   const currentWidgetIdRef = useRef<string>("");
 
   const navigate = useNavigate();
@@ -103,17 +74,17 @@ const MonacoEditor = ({
     };
 
     currentWidgetIdRef.current = contentWidget.getId();
-    editorRef.current?.addContentWidget(contentWidget);
+    editorInstance?.addContentWidget(contentWidget);
   };
 
   const hidePopup = () => {
     if (currentWidgetIdRef.current) {
       const contentWidget: monaco.editor.IContentWidget = {
         getId: () => currentWidgetIdRef.current,
-        getDomNode: () => null,
+        getDomNode: () => document.createElement("div"),
         getPosition: () => null,
       };
-      editorRef.current?.removeContentWidget(contentWidget);
+      editorInstance?.removeContentWidget(contentWidget);
       currentWidgetIdRef.current = "";
     }
   };
@@ -128,13 +99,14 @@ const MonacoEditor = ({
         contextMenuOrder: action.contextMenuOrder,
         run: () => {
           const range = editor.getSelection();
-          const currentSelection = editor.getModel().getValueInRange(editor.getSelection());
+          const model = editor.getModel();
+          const currentSelection = range ? model?.getValueInRange(range) : null;
           switch (action.id) {
             case "create-new-character":
-              newCharacter(currentSelection);
+              newCharacter(currentSelection ?? "");
               break;
             case "create-new-setting":
-              newSetting(currentSelection);
+              newSetting(currentSelection ?? "");
               break;
             case "ai-enhance":
               if (currentSelection) {
@@ -158,23 +130,24 @@ const MonacoEditor = ({
       });
     });
 
-    editorRef.current = editor;
+    setEditorInstance(editor);
   };
 
   useEffect(() => {
-    if (!editorRef.current) return;
-    editorRef.current.onMouseMove((event) => {
+    if (!editorInstance) return;
+    editorInstance.onMouseMove((event) => {
       if (!characters.length && !storySettings.length) return;
       const position = event.target.position;
       if (!position) {
         hidePopup();
         return;
       }
-      const word = editorRef.current.getModel().getWordAtPosition(position);
+      const model = editorInstance.getModel();
+      const word = model?.getWordAtPosition(position);
       // check if there's a character with name equal to the word
       if (word) {
-        const character = characters.find(({ name }) => name === word.word);
-        const storySetting = storySettings.find(({ title }) => title === word.word);
+        const character = characters.find(({ name }: CharacterTypes) => name === word.word);
+        const storySetting = storySettings.find(({ title }: { title: string }) => title === word.word);
         // TODO: What if a character and a story setting have the same name?
         if (character || storySetting) {
           showPopup({
@@ -190,17 +163,17 @@ const MonacoEditor = ({
         hidePopup();
       }
     });
-  }, [editorRef.current, characters, storySettings]);
+  }, [editorInstance, characters, storySettings]);
 
   // Decorate the editor with character and story setting names
   useEffect(() => {
-    if (!editorRef.current) return;
-    const model = editorRef.current.getModel();
-    const newCharacterDecorations = [];
+    if (!editorInstance) return;
+    const model = editorInstance.getModel();
+    const newCharacterDecorations: NewCharacterDecorationsTypes = [];
 
-    characters.forEach(({ name }) => {
-      const matches = model.findMatches(name, true, true, false, null, true);
-      matches.forEach((match) => {
+    characters.forEach(({ name }: CharacterTypes) => {
+      const matches = model?.findMatches(name, true, true, false, null, true);
+      matches?.forEach((match) => {
         newCharacterDecorations.push({
           range: match.range,
           options: {
@@ -210,21 +183,22 @@ const MonacoEditor = ({
       });
     });
 
-    setDecorations((currentDecorations) =>
-      editorRef.current.deltaDecorations(currentDecorations, newCharacterDecorations)
-    );
-  }, [editorRef.current, characters]);
+    setDecorations((currentDecorations) => {
+      const newDecorations = editorInstance?.createDecorationsCollection(newCharacterDecorations);
+      return newDecorations ? [newDecorations] : currentDecorations;
+    });
+  }, [editorInstance, characters]);
 
   // Decorate the editor with character and story setting names
   // TODO: fix bug when character name is the same as story setting name
   useEffect(() => {
-    if (!editorRef.current) return;
-    const model = editorRef.current.getModel();
-    const newStorySettingDecorations = [];
+    if (!editorInstance) return;
+    const model = editorInstance.getModel();
+    const newStorySettingDecorations: NewStorySettingDecorationsTypes = [];
 
-    storySettings.forEach(({ title }) => {
-      const matches = model.findMatches(title, true, true, false, null, true);
-      matches.forEach((match) => {
+    storySettings.forEach(({ title }: StorySettingTypes) => {
+      const matches = model?.findMatches(title, true, true, false, null, true);
+      matches?.forEach((match) => {
         newStorySettingDecorations.push({
           range: match.range,
           options: {
@@ -234,10 +208,11 @@ const MonacoEditor = ({
       });
     });
 
-    setDecorations((currentDecorations) =>
-      editorRef.current.deltaDecorations(currentDecorations, newStorySettingDecorations)
-    );
-  }, [editorRef.current, storySettings]);
+    setDecorations((currentDecorations) => {
+      const newDecorations = editorInstance.createDecorationsCollection(newStorySettingDecorations);
+      return newDecorations ? [newDecorations] : currentDecorations;
+    });
+  }, [editorInstance, storySettings]);
 
   // TODO: test if this works - it's about enhancing the text when changes appear
   useEffect(() => {
@@ -247,13 +222,13 @@ const MonacoEditor = ({
           range,
           text: enhancedSelection,
         };
-        editorRef.current.executeEdits("enhance-text", [options]);
+        editorInstance?.executeEdits("enhance-text", [options]);
         toast.success("Your text was enhanced!");
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [editorRef.current]);
+  }, [editorInstance]);
 
   return (
     <div className="shadow-lg shadow-slate-200 h-full">

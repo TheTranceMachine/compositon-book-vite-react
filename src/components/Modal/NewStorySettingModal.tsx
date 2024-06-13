@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { ButtonGroup, Button, Modal, Form, InputGroup } from "react-bootstrap";
 import { BsImageFill } from "react-icons/bs";
-import { NewStorySetting } from "../../../types/types";
+import { StorySettingTypes } from "../../../types/types";
 
 type NewStorySettingModalPropTypes = {
   show: boolean;
   setShow: () => void;
-  onSave: (val: NewStorySetting) => void;
+  onSave: (val: StorySettingTypes) => void;
   newSettingTitle: string;
 };
 

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { ButtonGroup, Button, Modal, Form, InputGroup } from "react-bootstrap";
 import { BsFileEarmarkPersonFill } from "react-icons/bs";
-import { NewCharacter } from "../../../types/types";
+import { CharacterTypes } from "../../../types/types";
 
 type NewCharacterModalPropTypes = {
   show: boolean;
   setShow: () => void;
-  onSave: (val: NewCharacter) => void;
+  onSave: (val: CharacterTypes) => void;
   newCharacterName: string;
 };
 

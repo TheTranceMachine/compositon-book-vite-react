@@ -26,12 +26,12 @@ export type ProjectStoreTypes = {
   selectedProject: object;
 };
 
-export type NewCharacter = {
+export type CharacterTypes = {
   name: string;
   description: string;
 };
 
-export type NewStorySetting = {
+export type StorySettingTypes = {
   title: string;
   description: string;
 };
@@ -62,3 +62,6 @@ export type MonacoEditorTypes = {
   openCharactersPane: () => void
   openStorySettingsPane: () => void
 };
+
+export type NewCharacterDecorationsTypes = monaco.editor.IModelDeltaDecoration[] | { range: monaco.Range; options: { inlineClassName: string; }; }[];
+export type NewStorySettingDecorationsTypes = monaco.editor.IModelDeltaDecoration[] | { range: monaco.Range; options: { inlineClassName: string; }; }[];
