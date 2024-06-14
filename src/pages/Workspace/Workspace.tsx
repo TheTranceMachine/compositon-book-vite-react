@@ -156,6 +156,7 @@ const Workspace = () => {
         </Pane>
         <Pane minSize={50} maxSize={600}>
           <Characters
+            characters={characters}
             closeCharactersPane={() => setSizes([200, 2, 2, "auto", 2])}
             deleteCharacter={(id: number, name: string) =>
               handleDeletionRequest({ id, title: name, type: "character" })
@@ -164,6 +165,7 @@ const Workspace = () => {
         </Pane>
         <Pane minSize={50} maxSize={600}>
           <StorySettings
+            storySettings={storySettings}
             closeStorySettingsPane={() => setSizes([200, 2, 2, "auto", 2])}
             deleteStorySetting={(id: number, title: string) =>
               handleDeletionRequest({ id, title, type: "story setting" })
