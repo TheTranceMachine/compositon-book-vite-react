@@ -3,10 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import Editor from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
-import { useAtomState } from "@zedux/react";
 import { BsFileEarmarkPersonFill, BsImageFill } from "react-icons/bs";
-import { editorStore, storeCurrentSelection } from "../../reducers/editorReducer";
-import { projectStoreAtom } from "../../reducers/projectStore";
 import { useToast } from "../../hooks/useToast";
 import editorActions from "./editor-actions";
 import {
@@ -34,17 +31,19 @@ const PopupContent = ({ title, description, type }: PopupContentTypes) => (
 
 const MonacoEditor = ({
   resizePanel,
+  changeEditorCurrentSelection,
+  editorEnhancedSelection,
+  editorSelectionRange,
+  characters,
+  storySettings,
   newCharacter,
   newSetting,
   openCharactersPane,
   openStorySettingsPane,
 }: MonacoEditorTypes) => {
   const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | undefined>(undefined);
-  const [projectState, setProjectState] = useAtomState(projectStoreAtom);
   const [decorations, setDecorations] = useState<monaco.editor.IEditorDecorationsCollection[]>([]);
-  const { characters, storySettings } = projectState;
 
-  // const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
   const currentWidgetIdRef = useRef<string>("");
 
   const navigate = useNavigate();
@@ -110,7 +109,7 @@ const MonacoEditor = ({
               break;
             case "ai-enhance":
               if (currentSelection) {
-                editorStore.dispatch(storeCurrentSelection({ range, currentSelection }));
+                changeEditorCurrentSelection({ range, currentSelection });
                 resizePanel();
                 navigate("enhance");
               } else {
@@ -216,19 +215,15 @@ const MonacoEditor = ({
 
   // TODO: test if this works - it's about enhancing the text when changes appear
   useEffect(() => {
-    const subscription = editorStore.subscribe(({ range, enhancedSelection }) => {
-      if (enhancedSelection !== "") {
-        const options = {
-          range,
-          text: enhancedSelection,
-        };
-        editorInstance?.executeEdits("enhance-text", [options]);
-        toast.success("Your text was enhanced!");
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [editorInstance]);
+    if (editorEnhancedSelection !== "") {
+      const options = {
+        range: editorSelectionRange,
+        text: editorEnhancedSelection,
+      };
+      editorInstance?.executeEdits("enhance-text", [options]);
+      toast.success("Your text was enhanced!");
+    }
+  }, [editorInstance, editorEnhancedSelection, editorSelectionRange]);
 
   return (
     <div className="shadow-lg shadow-slate-200 h-full">

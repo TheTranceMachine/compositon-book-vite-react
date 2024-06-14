@@ -1,15 +1,21 @@
 import { Suspense, lazy, useState } from "react";
 import SplitPane, { Pane, SashContent } from "split-pane-react";
-import { Outlet } from "react-router-dom";
 import { useMediaQuery } from "usehooks-ts";
 import { useAtomState } from "@zedux/react";
 import { projectStoreAtom } from "../../reducers/projectStore";
+import { editorStoreAtom } from "../../reducers/editorStore";
 import MonacoEditor from "../../components/Editor/Editor.jsx";
 import Characters from "../../components/Characters/Characters.jsx";
 import StorySettings from "../../components/StorySettings/StorySettings.jsx";
 import "./Workspace.scss";
-import { CharacterTypes, StorySettingTypes, DeletionItemType } from "../../../types/types.js";
+import {
+  CharacterTypes,
+  StorySettingTypes,
+  DeletionItemType,
+  MonacoEditorCurrentSelectionTypes,
+} from "../../../types/types.js";
 import { useToast } from "../../hooks/useToast";
+import { Prompt } from "../Prompt/Prompt";
 
 const NewCharacterModal = lazy(() => import("../../components/Modal/NewCharacterModal"));
 const NewStorySettingModal = lazy(() => import("../../components/Modal/NewStorySettingModal"));
@@ -19,7 +25,12 @@ const initialSizes = [200, 2, 2, "auto", 2];
 
 const Workspace = () => {
   // TODO: Think where to use separate atoms for characters and story settings
-  const [projectState, setProjectState] = useAtomState(projectStoreAtom);
+  const [projectStore, setProjectStore] = useAtomState(projectStoreAtom);
+  const { characters, storySettings } = projectStore;
+
+  const [editorStore, setEditorStore] = useAtomState(editorStoreAtom);
+  const { editorSelectionRange, editorCurrentSelection, editorEnhancedSelection } = editorStore;
+
   const [sizes, setSizes] = useState(initialSizes);
   const [allowResize, setAllowResize] = useState(false);
   const [newCharacterName, setNewCharacterName] = useState("");
@@ -35,7 +46,7 @@ const Workspace = () => {
 
   const {
     selectedProject: { projectName },
-  } = projectState;
+  } = projectStore;
   const toast = useToast();
 
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -54,6 +65,22 @@ const Workspace = () => {
     setAllowResize(true);
   };
 
+  const handleEditorCurrentSelection = ({ range, currentSelection }: MonacoEditorCurrentSelectionTypes) => {
+    setEditorStore({
+      ...editorStore,
+      editorSelectionRange: range,
+      editorCurrentSelection: currentSelection,
+      editorEnhancedSelection: "",
+    });
+  };
+
+  const handleEditorEnhancedSelection = (enhancedText: string) => {
+    setEditorStore({
+      ...editorStore,
+      editorEnhancedSelection: enhancedText,
+    });
+  };
+
   const handleNewCharacter = (name: string) => {
     setNewCharacterName(name);
     setNewCharacterModal(true);
@@ -66,9 +93,9 @@ const Workspace = () => {
 
   const handleNewCharacterSave = (character: CharacterTypes) => {
     const id = Math.random().toString(16).slice(2);
-    setProjectState({
-      ...projectState,
-      characters: [...projectState.characters, { ...character, id }],
+    setProjectStore({
+      ...projectStore,
+      characters: [...projectStore.characters, { ...character, id }],
       selectedCharacter: { ...character, id },
     });
     setNewCharacterModal(false);
@@ -77,9 +104,9 @@ const Workspace = () => {
 
   const handleNewStorySettingSave = (storySetting: StorySettingTypes) => {
     const id = Math.random().toString(16).slice(2);
-    setProjectState({
-      ...projectState,
-      storySettings: [...projectState.storySettings, { ...storySetting, id }],
+    setProjectStore({
+      ...projectStore,
+      storySettings: [...projectStore.storySettings, { ...storySetting, id }],
       selectedStorySetting: { ...storySetting, id },
     });
     setNewStorySettingModal(false);
@@ -93,15 +120,15 @@ const Workspace = () => {
 
   const handleDeleteItem = (id: number, type: string) => {
     if (type === "story setting") {
-      setProjectState({
-        ...projectState,
-        storySettings: projectState.storySettings.filter((setting) => setting.id !== id),
+      setProjectStore({
+        ...projectStore,
+        storySettings: projectStore.storySettings.filter((setting) => setting.id !== id),
         selectedStorySetting: {},
       });
     } else {
-      setProjectState({
-        ...projectState,
-        characters: projectState.characters.filter((character) => character.id !== id),
+      setProjectStore({
+        ...projectStore,
+        characters: projectStore.characters.filter((character) => character.id !== id),
         selectedCharacter: {},
       });
     }
@@ -146,6 +173,11 @@ const Workspace = () => {
         <Pane minSize={50} className="px-32 py-3">
           <MonacoEditor
             resizePanel={unlockView}
+            changeEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
+            editorEnhancedSelection={editorEnhancedSelection}
+            editorSelectionRange={editorSelectionRange}
+            characters={characters}
+            storySettings={storySettings}
             newCharacter={(val: string) => handleNewCharacter(val)}
             newSetting={(val: string) => handleNewSetting(val)}
             openCharactersPane={() => setSizes([50, 600, 2, "auto", 2])}
@@ -157,7 +189,12 @@ const Workspace = () => {
           maxSize={600}
           className="flex flex-col flex-wrap justify-start items-center gap-y-3 h-full bg-[rgb(238, 238, 238)]"
         >
-          <Outlet context={[lockView, closePane]} />
+          <Prompt
+            lockView={lockView}
+            closePane={closePane}
+            editorCurrentSelection={editorCurrentSelection}
+            changeEditorEnhancedSelection={(val) => handleEditorEnhancedSelection(val)}
+          />
         </Pane>
       </SplitPane>
       <Suspense>

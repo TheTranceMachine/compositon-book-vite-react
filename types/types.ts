@@ -1,6 +1,11 @@
 import * as monaco from "monaco-editor";
 
-export type FunctionArrayType = Function[];
+export type PromptTypes = {
+  lockView: () => void;
+  closePane: () => void;
+  editorCurrentSelection: string;
+  changeEditorEnhancedSelection: (val: string) => void
+};
 
 export type Project = {
   projectId: number;
@@ -55,8 +60,18 @@ export type PopupContentTypes = {
   type: string
 };
 
+export type MonacoEditorCurrentSelectionTypes = {
+  range: monaco.Selection | null
+  currentSelection: string
+};
+
 export type MonacoEditorTypes = {
   resizePanel: () => void
+  changeEditorCurrentSelection: (selection: MonacoEditorCurrentSelectionTypes) => void
+  editorEnhancedSelection: string
+  editorSelectionRange: monaco.Range
+  characters: Array<CharacterTypes>
+  storySettings: Array<StorySettingTypes>
   newCharacter: (name: string) => void
   newSetting: (title: string) => void
   openCharactersPane: () => void

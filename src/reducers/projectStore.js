@@ -6,11 +6,11 @@ const projectStoreAtom = atom("projectStore", () => {
 
   const selectedStorySetting = injectStore({});
   const storySettings = injectStore([]);
-  const store = injectStore();
 
   const selectedProject = injectStore({});
   const projects = injectStore([]);
 
+  const store = injectStore();
   // .use() configures the store after creation:
   store.use({ selectedCharacter, characters, selectedStorySetting, storySettings, selectedProject, projects });
 
