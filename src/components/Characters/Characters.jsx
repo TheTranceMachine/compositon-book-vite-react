@@ -3,7 +3,7 @@ import { IoCloseCircleSharp } from "react-icons/io5";
 import { BsFileEarmarkPersonFill } from "react-icons/bs";
 
 const Characters = ({ characters, closeCharactersPane, deleteCharacter }) => (
-  <div className="py-2 px-3 h-full bg-white">
+  <div className="py-2 px-3">
     <div className="flex justify-between items-center mb-3">
       <div className="font-medium truncate">Characters</div>
       <IoCloseCircleSharp onClick={() => closeCharactersPane()} className="cursor-pointer" />

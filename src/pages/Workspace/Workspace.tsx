@@ -149,24 +149,25 @@ const Workspace = () => {
           </SashContent>
         )}
       >
-        <Pane minSize={50} maxSize={600}>
-          <div className="flex p-2">
-            <div className="font-medium truncate">{projectName}</div>
-          </div>
+        <Pane minSize={50} maxSize={600} className="flex p-2 bg-neutral-50 h-full">
+          <div className="font-medium truncate ">{projectName}</div>
         </Pane>
-        <Pane minSize={50} maxSize={600}>
+        <Pane minSize={50} maxSize={600} className="bg-neutral-50 h-full">
           <Characters
             characters={characters}
-            closeCharactersPane={() => setSizes([200, 2, 2, "auto", 2])}
+            closeCharactersPane={() => setSizes([200, 50, 50, "auto", 2])}
             deleteCharacter={(id: number, name: string) =>
               handleDeletionRequest({ id, title: name, type: "character" })
             }
           />
         </Pane>
-        <Pane minSize={50} maxSize={600}>
+        <Pane minSize={50} maxSize={600} className="h-full bg-neutral-50">
           <StorySettings
             storySettings={storySettings}
-            closeStorySettingsPane={() => setSizes([200, 2, 2, "auto", 2])}
+            toggleStorySettingsPane={(val) =>
+              val ? setSizes([50, 50, 600, "auto", 2]) : setSizes([200, 50, 50, "auto", 2])
+            }
+            paneFullView={sizes.at(2) === 600}
             deleteStorySetting={(id: number, title: string) =>
               handleDeletionRequest({ id, title, type: "story setting" })
             }
