@@ -21,7 +21,7 @@ const NewCharacterModal = lazy(() => import("../../components/Modal/NewCharacter
 const NewStorySettingModal = lazy(() => import("../../components/Modal/NewStorySettingModal"));
 const DeletionConfirmationModal = lazy(() => import("../../components/Modal/DeletionConfirmationModal"));
 
-const initialSizes = [200, 2, 2, "auto", 2];
+const initialSizes = [150, 50, 50, "auto", 2];
 
 const Workspace = () => {
   // TODO: Think where to use separate atoms for characters and story settings
@@ -32,7 +32,7 @@ const Workspace = () => {
   const { editorSelectionRange, editorCurrentSelection, editorEnhancedSelection } = editorStore;
 
   const [sizes, setSizes] = useState(initialSizes);
-  const [allowResize, setAllowResize] = useState(false);
+  const [allowResize, setAllowResize] = useState(true);
   const [newCharacterName, setNewCharacterName] = useState("");
   const [newStorySettingTitle, setNewStorySettingTitle] = useState("");
   const [newCharacterModal, setNewCharacterModal] = useState(false);
@@ -61,7 +61,7 @@ const Workspace = () => {
   };
 
   const unlockView = () => {
-    setSizes([200, 2, 2, "auto", 600]);
+    setSizes([150, 2, 2, "auto", 400]);
     setAllowResize(true);
   };
 
@@ -149,34 +149,34 @@ const Workspace = () => {
           </SashContent>
         )}
       >
-        <Pane minSize={50} maxSize={600} className="flex p-2 bg-neutral-50 h-full">
+        <Pane minSize={50} maxSize={150} className="flex p-2 bg-neutral-50 h-full">
           <div className="font-medium truncate ">{projectName}</div>
         </Pane>
-        <Pane minSize={50} maxSize={600} className="bg-neutral-50 h-full">
+        <Pane minSize={50} maxSize={400} className="bg-neutral-50 h-full">
           <Characters
             characters={characters}
             toggleCharactersPane={(val) =>
-              val ? setSizes([50, 600, 50, "auto", 2]) : setSizes([200, 50, 50, "auto", 2])
+              val ? setSizes([50, 400, 50, "auto", 2]) : setSizes([150, 50, 50, "auto", 2])
             }
-            paneFullView={sizes.at(1) === 600}
+            paneFullView={sizes.at(1) === 400}
             deleteCharacter={(id: number, name: string) =>
               handleDeletionRequest({ id, title: name, type: "character" })
             }
           />
         </Pane>
-        <Pane minSize={50} maxSize={600} className="h-full bg-neutral-50">
+        <Pane minSize={50} maxSize={400} className="h-full bg-neutral-50">
           <StorySettings
             storySettings={storySettings}
             toggleStorySettingsPane={(val) =>
-              val ? setSizes([50, 50, 600, "auto", 2]) : setSizes([200, 50, 50, "auto", 2])
+              val ? setSizes([50, 50, 400, "auto", 2]) : setSizes([150, 50, 50, "auto", 2])
             }
-            paneFullView={sizes.at(2) === 600}
+            paneFullView={sizes.at(2) === 400}
             deleteStorySetting={(id: number, title: string) =>
               handleDeletionRequest({ id, title, type: "story setting" })
             }
           />
         </Pane>
-        <Pane minSize={50} className="px-32 py-3">
+        <Pane minSize={50} className="px-32 pt-3">
           <MonacoEditor
             resizePanel={unlockView}
             changeEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
@@ -186,13 +186,13 @@ const Workspace = () => {
             storySettings={storySettings}
             newCharacter={(val: string) => handleNewCharacter(val)}
             newSetting={(val: string) => handleNewSetting(val)}
-            openCharactersPane={() => setSizes([50, 600, 2, "auto", 2])}
-            openStorySettingsPane={() => setSizes([50, 2, 600, "auto", 2])}
+            openCharactersPane={() => setSizes([50, 400, 2, "auto", 2])}
+            openStorySettingsPane={() => setSizes([50, 2, 400, "auto", 2])}
           />
         </Pane>
         <Pane
           minSize={50}
-          maxSize={600}
+          maxSize={400}
           className="flex flex-col flex-wrap justify-start items-center gap-y-3 h-full bg-[rgb(238, 238, 238)]"
         >
           <Prompt
