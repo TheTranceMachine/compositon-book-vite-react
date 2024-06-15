@@ -18,12 +18,12 @@ import {
 import "./Editor.scss";
 
 const PopupContent = ({ title, description, type }: PopupContentTypes) => (
-  <div className="bg-amber-300 rounded-md border-1 border-amber-400 shadow-md shadow-slate-400 mt-3 w-52">
-    <div className="p-2 border-b border-amber-400 flex gap-2 items-center">
+  <div className="bg-neutral-300 rounded-md border-1 border-neutral-400 shadow-md shadow-slate-400 mt-3 w-52">
+    <div className="p-2 border-b border-neutral-400 flex gap-2 items-center">
       {type === "character" ? <BsFileEarmarkPersonFill /> : <BsImageFill />}
       <div className="font-medium truncate">{title}</div>
     </div>
-    <div className="p-2 border-t border-t-amber-200">
+    <div className="p-2 border-t border-t-neutral-200">
       <div className="text-xs text-gray-500">{description}</div>
     </div>
   </div>

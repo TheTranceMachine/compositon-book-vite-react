@@ -155,7 +155,10 @@ const Workspace = () => {
         <Pane minSize={50} maxSize={600} className="bg-neutral-50 h-full">
           <Characters
             characters={characters}
-            closeCharactersPane={() => setSizes([200, 50, 50, "auto", 2])}
+            toggleCharactersPane={(val) =>
+              val ? setSizes([50, 600, 50, "auto", 2]) : setSizes([200, 50, 50, "auto", 2])
+            }
+            paneFullView={sizes.at(1) === 600}
             deleteCharacter={(id: number, name: string) =>
               handleDeletionRequest({ id, title: name, type: "character" })
             }
