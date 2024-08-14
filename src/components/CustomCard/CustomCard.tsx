@@ -1,6 +1,5 @@
-import React from 'react';
-import { Card, ListGroup, Button } from 'react-bootstrap';
-import './CustomCard.scss';
+import { Card, ListGroup, Button } from "react-bootstrap";
+import "./CustomCard.scss";
 
 interface CustomCardPropTypes {
   timeStamp?: string;
@@ -25,7 +24,7 @@ const CustomCard = ({
   onEdit,
   onDelete,
 }: CustomCardPropTypes) => (
-  <Card className={`custom-card ${className ? className : ''}`} bg={backgroundColor} text={textColor}>
+  <Card className={`custom-card ${className ? className : ""}`} bg={backgroundColor} text={textColor}>
     <Card.Header>{title}</Card.Header>
     <Card.Body className="custom-card__body">
       <Card.Text>{description}</Card.Text>
@@ -48,4 +47,4 @@ const CustomCard = ({
   </Card>
 );
 
-export { CustomCard };
+export default CustomCard;

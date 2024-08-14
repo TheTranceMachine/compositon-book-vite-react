@@ -9,7 +9,6 @@ import "split-pane-react/esm/themes/default.css";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { router } from "../routes/index.jsx";
 import "./tailwind-index.scss";
-import "./userWorkers.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
