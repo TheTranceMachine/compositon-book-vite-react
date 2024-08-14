@@ -5,7 +5,7 @@ Its composition side combines the story world generator, the story world charact
 Its marketing side lets the writers promote their works online and connect with the readers. 
 Thanks to the integrated Kindle Direct Publishing, the writers can sell their work with a click of a button.
 
-![Main Editor](./readme_assets/main_editor.png)
+![Main Editor](./readme_assets/composition_book_screenshot.png)
 
 Frontend Technology stack:
 - Javascript/Typescript
